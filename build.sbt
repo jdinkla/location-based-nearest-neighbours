@@ -8,3 +8,6 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % "1.4.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 
+libraryDependencies += "joda-time" % "joda-time" % "2.8.1"
+
+
