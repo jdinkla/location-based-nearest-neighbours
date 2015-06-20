@@ -9,11 +9,13 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
   "joda-time" % "joda-time" % "2.8.1",
   "com.esotericsoftware" % "kryo" % "3.0.2",
-  "de.javakaffee" % "kryo-serializers" % "0.30"
+  "de.javakaffee" % "kryo-serializers" % "0.30",
+  "org.scalaz" %% "scalaz-core" % "7.1.3"
 )
 
+scalacOptions += "-feature"
 
-// libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
-// libraryDependencies += "joda-time" % "joda-time" % "2.8.1"
+initialCommands in console := "import scalaz._, Scalaz._"
+
 
 
