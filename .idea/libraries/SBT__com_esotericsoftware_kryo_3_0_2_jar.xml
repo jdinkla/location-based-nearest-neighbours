@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: com.esotericsoftware:kryo:3.0.2:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.esotericsoftware/kryo/bundles/kryo-3.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.esotericsoftware/kryo/docs/kryo-3.0.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.esotericsoftware/kryo/srcs/kryo-3.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

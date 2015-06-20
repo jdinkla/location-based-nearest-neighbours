@@ -5,40 +5,44 @@ package net.dinkla.lbnn.kd
  */
 
 sealed trait KdTree[+T] {
-
+  def size: Int
 }
 
-object Nil extends KdTree[Nothing]
+object Nil extends KdTree[Nothing] {
+  val size = 0
+}
 
-class Leaf[T](val value: T) extends KdTree[T]
+case class Leaf[T](val value: T) extends KdTree[T] {
+  val size = 1
+}
 
-class Node[T](val d: Int,
+case class Node[T](val d: Int,
               val med: T,
               val ls: KdTree[T] = Nil,
               val es: KdTree[T] = Nil,
               val hs: KdTree[T] = Nil) extends KdTree[T] {
 
+  def size = 1 + ls.size + es.size + hs.size
+
 }
 
 object KdTree {
 
-  def divide[T](d: Int, xs: List[T]) = {
-    (xs(0), List(), List(), List())
-  }
+  import Order.divideByMedian
 
-  def build[T](d:Int, xs: List[T]): KdTree[T] = {
+  def build[T <% Ordered[T]](d:Int, xs: List[T]): KdTree[T] = {
     xs match {
       case List() => Nil
       case (x::List()) => new Leaf(x)
       case xs => {
         val j:Int = (d+1) % 2
-        val (m, ls, es, hs) = divide(d, xs)
-        new Node[T](d, m, build(j,ls), build(j,es), build(j,hs))
+        val p = divideByMedian2((p:Po(xs)
+        new Node[T](d, p.m, build(j, p.ls), build(j, p.es), build(j, p.hs))
       }
     }
   }
 
-  def fromList[T](xs: List[T]): KdTree[T] = {
+  def fromList[T <% Ordered[T]](xs: List[T]): KdTree[T] = {
     xs match {
       case List() => Nil
       case (x::xs) => build(0, xs)

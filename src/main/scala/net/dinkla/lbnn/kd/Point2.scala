@@ -24,9 +24,17 @@ class Point2(val x: Double, val y: Double)
   def _1 = x
   def _2 = y
 
-  def +(other: Point2): Point2 = Point2(x+other.x, y+other.y)
-  def -(other: Point2): Point2 = Point2(x-other.x, y-other.y)
+  def +(p: Point2): Point2 = Point2(x+p.x, y+p.y)
+  def -(p: Point2): Point2 = Point2(x-p.x, y-p.y)
   def *(d: Double): Point2 = Point2(x * d, y * d)
+  def **(p: Point2): Double = x * p.x + y * p.y
+
+  def sqrNorm(p: Point2): Double = {
+    val r = (this - p)
+    r ** r
+  }
+
+  def norm(p: Point2): Double = Math.sqrt(sqrNorm(p))
 
   override def equals(other: Any): Boolean = {
     other match {
@@ -44,6 +52,7 @@ class Point2(val x: Double, val y: Double)
     else y compare that.y
   }
 
+  override def toString: String = s"($x, $y)"
 }
 
 final class X2(val s: Double) extends Point2(0, 0) {
@@ -55,6 +64,7 @@ final class X2(val s: Double) extends Point2(0, 0) {
 object Point2 {
 
   def apply(x: Double = 0, y: Double = 0) = new Point2(x, y)
+  def apply(xy: (Double, Double)) = new Point2(xy._1, xy._1)
 
   //implicit def intToPoint2(v: Int) = Point2(v)
   implicit def doubleToPoint2(v: Double) = new X2(v)
