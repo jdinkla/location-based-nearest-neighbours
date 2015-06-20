@@ -1,7 +1,6 @@
-package net.dinkla.lbnn
+package net.dinkla.lbnn.spark
 
 import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.serializers.FieldSerializer
 import de.javakaffee.kryoserializers.jodatime.JodaDateTimeSerializer
 import org.apache.spark.serializer.KryoRegistrator
 import org.joda.time.DateTime

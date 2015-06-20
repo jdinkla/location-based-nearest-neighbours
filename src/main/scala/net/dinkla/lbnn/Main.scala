@@ -5,6 +5,7 @@ import java.util.Date
 
 import com.esotericsoftware.kryo.Kryo
 import net.dinkla.lbnn.preprocess.Preprocess
+import net.dinkla.lbnn.spark.{CIO, CheckIn}
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
@@ -38,7 +39,7 @@ object Main {
       .setMaster("local")
       .setAppName("net.dinkla.lbnn")
       .set("spark.executor.memory", "3g")
-      .set("spark.kryo.registrator", "net.dinkla.lbnn.CustomKryoRegistrator")
+      .set("spark.kryo.registrator", "net.dinkla.lbnn.spark.CustomKryoRegistrator")
       .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     new SparkContext(conf)
   }

@@ -2,13 +2,14 @@ package net.dinkla.lbnn
 
 import java.util.Date
 
+import net.dinkla.lbnn.spark.CheckIn
 import org.joda.time.DateTime
 import org.scalatest.FunSuite
 
 /**
  * Created by dinkla on 19/06/15.
  */
-class CheckIn$Test extends FunSuite {
+class CheckInSuite extends FunSuite {
 
   val line = "0       2010-10-12T23:58:03Z    30.261599404    -97.7585805953  15372"
   val parts = CheckIn.split(line)

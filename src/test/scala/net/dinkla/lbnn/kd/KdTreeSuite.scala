@@ -1,16 +1,18 @@
 package net.dinkla.lbnn.kd
 
-import net.dinkla.lbnn.kd.Order._
+import net.dinkla.lbnn.{Rectangle, Point2, Order}
+import Order._
 import org.scalatest.FunSuite
 
 import KdTree._
 
 import scalaz.Show
+import net.dinkla.lbnn.TestUtils.ps1
 
 /**
  * Created by dinkla on 19/06/15.
  */
-class KdTree$Test extends FunSuite {
+class KdTreeSuite extends FunSuite {
 
   test("testDivide") {
 
@@ -37,10 +39,8 @@ class KdTree$Test extends FunSuite {
   }
 
   test("fromList many") {
-    val ls = List(1, 3, 5, 7, 9)
-    val ls2 = ls.map { x => Point2(x, (x - 5) * (x - 5)) }
-    val kdt = fromList(ls2)
-    assert(kdt.size >= ls.size)
+    val kdt = fromList(ps1)
+    assert(kdt.size >= ps1.size)
     println(kdt)
 
     val et = EmbedTree.embed(kdt)
@@ -49,9 +49,7 @@ class KdTree$Test extends FunSuite {
   }
 
   test("rangeQuery") {
-    val ls = List(1, 3, 5, 7, 9)
-    val ls2 = ls.map { x => Point2(x, (x - 5) * (x - 5)) }
-    val kdt = fromList(ls2)
+    val kdt = fromList(ps1)
 
     val r = new Rectangle(Point2(2, 0), Point2(6,5))
 

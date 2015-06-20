@@ -17,6 +17,8 @@ object Utilities {
     FileUtils.deleteDirectory(new File(dir));
   }
 
+  import scala.language.postfixOps
+
   def download(url: String,  dest: String): Unit = {
     import sys.process._
     import java.net.URL

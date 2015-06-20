@@ -1,11 +1,11 @@
-package net.dinkla.lbnn.kd
+package net.dinkla.lbnn
 
 import org.scalatest.FunSuite
 
 /**
  * Created by dinkla on 19/06/15.
  */
-class Point2$Test extends FunSuite {
+class Point2Suite extends FunSuite {
 
   val p0 = Point2(0, 0)
   val p1 = Point2(10,12)
@@ -31,7 +31,6 @@ class Point2$Test extends FunSuite {
     assert(p1-p1 == p1.origin)
     assert(p1*2 == Point2(p1.x*2, p1.y*2))
     assert(2.0*p1 == Point2(p1.x*2, p1.y*2))
-    //assert(doubleToPoint2(2.0)*p1 == Point2(p1.x*2, p1.y*2))
   }
 
   test("ordered") {

@@ -1,36 +1,69 @@
 package net.dinkla.lbnn.kd
 
-import scala.collection.mutable.ListBuffer
+import net.dinkla.lbnn
+import net.dinkla.lbnn.{Point2, Order}
 
 /**
  * Created by dinkla on 19/06/15.
  */
 
+/**
+ * A k-dimensional tree.
+ *
+ * See for example ...
+ */
 sealed trait KdTree {
+
+  /**
+   *
+   * @return the size of the KdTree
+   */
   def size: Int
 
-  def rangeQuery(r: Range): List[Point2]
+  /**
+   *
+   * @param r     a range
+   * @return      the points contained in the range
+   */
+  def rangeQuery(r: lbnn.Range): List[Point2]
+
 }
 
+/**
+ * Nil
+ */
 object Nil extends KdTree {
+
   val size = 0
 
-  override def rangeQuery(r: Range): List[Point2] = List()
+  override def rangeQuery(r: lbnn.Range): List[Point2] = List()
 
   override def toString = "Nil"
 
 }
 
+/**
+ * Leaf
+ * @param value
+ */
 case class Leaf(val value: Point2) extends KdTree {
   val size = 1
 
-  override def rangeQuery(r: Range): List[Point2]
+  override def rangeQuery(r: lbnn.Range): List[Point2]
     = if (r.inRange(value)) List(value) else List()
 
   override def toString = s"Leaf($value)"
 
 }
 
+/**
+ *
+ * @param d
+ * @param med
+ * @param ls
+ * @param es
+ * @param hs
+ */
 case class Node(val d: Int,
               val med: Double,
               val ls: KdTree = Nil,
@@ -39,7 +72,7 @@ case class Node(val d: Int,
 
   def size = 1 + ls.size + es.size + hs.size
 
-  override def rangeQuery(r: Range): List[Point2] = {
+  override def rangeQuery(r: lbnn.Range): List[Point2] = {
     r.compareIth(d, med) match {
       case (-1,  _) => hs.rangeQuery(r)
       case ( 0,  _) => es.rangeQuery(r) ++ hs.rangeQuery(r)
@@ -53,6 +86,9 @@ case class Node(val d: Int,
 
 }
 
+/**
+ * KdTree companion
+ */
 object KdTree {
 
   import Order.divideByMedian2
@@ -68,19 +104,11 @@ object KdTree {
       }
     }
 
-
   def fromList(xs: List[Point2]): KdTree = {
     xs match {
       case List() => Nil
       case _ => build(0, xs)
     }
-  }
-
-  def rangeQuery(r: Range): List[KdTree] = {
-    val rs = ListBuffer[KdTree]()
-
-
-    return rs.result()
   }
 
 }

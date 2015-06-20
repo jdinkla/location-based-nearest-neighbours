@@ -1,4 +1,4 @@
-package net.dinkla.lbnn.kd
+package net.dinkla.lbnn
 
 /**
  * Created by dinkla on 19/06/15.
@@ -62,6 +62,8 @@ final class X2(val s: Double) extends Point2(0, 0) {
 }
 
 object Point2 {
+
+  import scala.language.implicitConversions
 
   def apply(x: Double = 0, y: Double = 0) = new Point2(x, y)
   def apply(xy: (Double, Double)) = new Point2(xy._1, xy._1)

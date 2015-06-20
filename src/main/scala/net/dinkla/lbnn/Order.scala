@@ -1,4 +1,4 @@
-package net.dinkla.lbnn.kd
+package net.dinkla.lbnn
 
 import scala.collection.mutable.ListBuffer
 

@@ -1,5 +1,7 @@
 package net.dinkla.lbnn.kd
 
+import net.dinkla.lbnn.Point2
+
 import scalaz.Tree
 
 /**

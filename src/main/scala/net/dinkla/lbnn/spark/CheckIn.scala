@@ -1,16 +1,16 @@
-package net.dinkla.lbnn
+package net.dinkla.lbnn.spark
 
 import java.text.SimpleDateFormat
-import java.util.Date
 
-import net.dinkla.lbnn.CheckIn.{LocationId, Coordinate, CustomerId}
 import org.joda.time.DateTime
+import CheckIn._
 
 trait C[T] {
 
   def parse(parts: Array[String]) : T
 
 }
+
 
 class CIO(val id: CustomerId,
           val date: Long,
