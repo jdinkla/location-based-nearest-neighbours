@@ -7,7 +7,7 @@ import org.scalatest.FunSuite
 import KdTree._
 
 import scalaz.Show
-import net.dinkla.lbnn.TestUtils.ps1
+import net.dinkla.lbnn.TestUtils.{ps1, ps2}
 
 /**
  * Created by dinkla on 19/06/15.
@@ -50,14 +50,23 @@ class KdTreeSuite extends FunSuite {
 
   test("rangeQuery") {
     val kdt = fromList(ps1)
-
     val r = new Rectangle(Point2(2, 0), Point2(6,5))
-
     val rs = kdt.rangeQuery(r)
-
     println(rs)
+  }
 
+  test("rangeQuery 2") {
+    val kdt = fromList(ps2)
+    //println(kdt)
+    //println(kdt.pprint(0))
 
+    val r1 = new Rectangle(Point2(0, 0), Point2(100, 100))
+    val rs1 = kdt.rangeQuery(r1)
+    assert(rs1.size == ps2.size)
+
+    val r2 = new Rectangle(Point2(2, 1.5), Point2(4.5,4))
+    val rs2 = kdt.rangeQuery(r2)
+    assert(rs2.size == 4)
   }
 
 }

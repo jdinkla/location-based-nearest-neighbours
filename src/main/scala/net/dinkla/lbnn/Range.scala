@@ -33,9 +33,11 @@ trait Range {
 
   /**
    * Compare the ith coordinate value m with p and q
-   * @param i
-   * @param m
-   * @return a pair of {-1, 0, 1}
+   * example comp i m p => LT wenn m<p
+   *
+   * @param i the dimension
+   * @param m the value
+   * @return a pair P: (C,C) where C={-1, 0, 1}
    */
   def compareIth(i: Int, m: Double): (Int, Int)
 
@@ -67,6 +69,6 @@ class Rectangle(val p: Point2, val q: Point2) extends Range {
   }
 
   def compareIth(i: Int, m: Double): (Int, Int)
-    = (p.ith(i) compare m, q.ith(i) compare m)
+    = (m compare p.ith(i), m compare q.ith(i))
 
 }

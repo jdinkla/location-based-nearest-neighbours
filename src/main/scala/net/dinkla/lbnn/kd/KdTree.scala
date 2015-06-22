@@ -27,6 +27,8 @@ sealed trait KdTree {
    */
   def rangeQuery(r: lbnn.Range): List[Point2]
 
+  def pprint(ind: Int): String
+
 }
 
 /**
@@ -39,6 +41,8 @@ object Nil extends KdTree {
   override def rangeQuery(r: lbnn.Range): List[Point2] = List()
 
   override def toString = "Nil"
+
+  def pprint(ind: Int): String = ""
 
 }
 
@@ -53,6 +57,9 @@ case class Leaf(val value: Point2) extends KdTree {
     = if (r.inRange(value)) List(value) else List()
 
   override def toString = s"Leaf($value)"
+
+  override def pprint(ind: Int): String
+    = " " * ind + toString
 
 }
 
@@ -84,6 +91,13 @@ case class Node(val d: Int,
 
   override def toString = s"Node($d, $med, $ls, $es, $hs)"
 
+  override def pprint(ind: Int): String = {
+    val indent = " " * ind
+    val ls2 = ls.pprint(ind+2)
+    val es2 = es.pprint(ind+2)
+    val hs2 = hs.pprint(ind+2)
+    s"$indent$d, $med\nl:$ls2\ne:$es2\nh:$hs2"
+  }
 }
 
 /**
@@ -100,7 +114,10 @@ object KdTree {
       case _ => {
         val j: Int = (d + 1) % 2
         val p = divideByMedian2[Point2](p => p.ith(d))(xs)
-        new Node(d, p.m.ith(d), build(j, p.ls), build(j, p.es), build(j, p.hs))
+        val ls2 = build(j, p.ls)
+        val es2 = build(j, p.es)
+        val hs2 = build(j, p.hs)
+        new Node(d, p.m.ith(d), ls2, es2, hs2)
       }
     }
 
