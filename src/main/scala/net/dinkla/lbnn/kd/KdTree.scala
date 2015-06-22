@@ -72,6 +72,9 @@ case class LeafExt[T](val extension: T, val value: Point2) extends KdTree {
 
   override def toString = s"LeafExt(${extension.toString}, $value)"
 
+  override def pprint(ind: Int): String
+    = " " * ind + toString
+
 }
 
 /**
