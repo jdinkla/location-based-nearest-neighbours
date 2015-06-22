@@ -48,6 +48,19 @@ class KdTreeSuite extends FunSuite {
     println(et.draw(Show.showFromToString[Point2]))
   }
 
+  test("fromListExt many") {
+    type P = (Int, Point2)
+    val qs : List[P] = (1 to 10).toList.zip(ps1)
+
+    val kdt = fromListExt[Int](qs)
+    assert(kdt.size >= ps1.size)
+    println(kdt)
+
+    val et = EmbedTree.embed(kdt)
+    println(et.draw(Show.showFromToString[Point2]))
+  }
+
+
   test("rangeQuery") {
     val kdt = fromList(ps1)
     val r = new Rectangle(Point2(2, 0), Point2(6,5))

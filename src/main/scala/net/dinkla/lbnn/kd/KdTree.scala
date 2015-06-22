@@ -63,6 +63,17 @@ case class Leaf(val value: Point2) extends KdTree {
 
 }
 
+case class LeafExt[T](val extension: T, val value: Point2) extends KdTree {
+
+  val size = 1
+
+  override def rangeQuery(r: lbnn.Range): List[Point2]
+  = if (r.inRange(value)) List(value) else List()
+
+  override def toString = s"LeafExt(${extension.toString}, $value)"
+
+}
+
 /**
  *
  * @param d
@@ -125,6 +136,24 @@ object KdTree {
     xs match {
       case List() => Nil
       case _ => build(0, xs)
+    }
+  }
+
+  def buildExt[T](d: Int, xs: List[(T, Point2)]): KdTree =
+    xs match {
+      case List() => Nil
+      case List(x) => new LeafExt[T](x._1, x._2)
+      case _ => {
+        val j: Int = (d + 1) % 2
+        val p = divideByMedian2[(T, Point2)](p => p._2.ith(d))(xs)
+        new Node(d, p.m._2.ith(d), buildExt(j, p.ls), buildExt(j, p.es), buildExt(j, p.hs))
+      }
+    }
+
+  def fromListExt[T](xs: List[(T, Point2)]): KdTree = {
+    xs match {
+      case List() => Nil
+      case _ => buildExt(0, xs)
     }
   }
 
