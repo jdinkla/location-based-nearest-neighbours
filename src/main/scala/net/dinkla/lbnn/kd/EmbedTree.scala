@@ -13,17 +13,16 @@ object EmbedTree {
   import scalaz.Tree.leaf
   import scalaz.Tree.node
 
-  def embed(kdt: KdTree): Tree[Point2] = {
-    kdt match {
-      case Nil => leaf(null)
-      case Leaf(x) => leaf(x)
-      case LeafExt(v, x) => leaf(x)
-      case Node(d, m, ls, es, hs) => {
-        val p = Point2(d, m)
-        val ss : Stream[Tree[Point2]] = Stream(embed(ls), embed(es), embed(hs))
-        node(p, ss)
-      }
-    }
-  }
+//  def embed[T <: AnyRef](kdt: KdTree): Tree[T] = {
+//    kdt match {
+//      case Nil => (leaf()):Tree[Nothing]
+//      case Leaf(p, v) => leaf((p, v))
+//      case Node(d, m, ls, es, hs) => {
+//        val p = Point2(d, m)
+//        val ss : Stream[Tree[Point2]] = Stream(embed(ls), embed(es), embed(hs))
+//        node(p, ss)
+//      }
+//    }
+//  }
 
 }

@@ -22,10 +22,10 @@ object Benchmark {
     val rs: List[Point2] = randomPoints.take(n).toList
 //    println(rs)
 
-    var kdt: KdTree = null
+    var kdt: KdTree[Int] = null
 
     timerGc("creation") {
-      kdt = KdTree.fromList(rs)
+      kdt = KdTree.fromList(rs.zipWithIndex)
     }
 
     for (i <- 1 to steps) {

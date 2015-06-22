@@ -1,7 +1,9 @@
 package net.dinkla.lbnn.kd
 
 import net.dinkla.lbnn
-import net.dinkla.lbnn.{Point2, Order}
+import net.dinkla.lbnn.{Point2, Order, Range}
+
+import scala.collection.mutable.ListBuffer
 
 /**
  * Created by dinkla on 19/06/15.
@@ -12,7 +14,7 @@ import net.dinkla.lbnn.{Point2, Order}
  *
  * See for example ...
  */
-sealed trait KdTree {
+sealed trait KdTree[+T] {
 
   /**
    *
@@ -22,55 +24,63 @@ sealed trait KdTree {
 
   /**
    *
-   * @param r     a range
+   * @param range     a range
    * @return      the points contained in the range
    */
-  def rangeQuery(r: lbnn.Range): List[Point2]
+  def rangeQuery(range: Range): List[(Point2, T)]
 
-  def pprint(ind: Int): String
+  /**
+   *
+   * @return
+   */
+  def nodes: List[(Point2, T)]
+
+  /**
+   * Pretty printer
+   * @param indentation
+   * @return
+   */
+  def pprint(indentation: Int): String
+
+//  def map[A, B](f: A => B): KdTree
 
 }
 
 /**
  * Nil
  */
-object Nil extends KdTree {
+class Nil[T] extends KdTree[T] {
 
   val size = 0
 
-  override def rangeQuery(r: lbnn.Range): List[Point2] = List()
+  override def rangeQuery(range: Range): List[(Point2, T)] = List()
+
+  override def nodes: List[(Point2, T)]  = List()
 
   override def toString = "Nil"
 
-  def pprint(ind: Int): String = ""
+  override def pprint(ind: Int): String = ""
 
 }
+
+object Nil extends Nil[Nothing]
 
 /**
  * Leaf
- * @param value
+ * @param p
  */
-case class Leaf(val value: Point2) extends KdTree {
-  val size = 1
-
-  override def rangeQuery(r: lbnn.Range): List[Point2]
-    = if (r.inRange(value)) List(value) else List()
-
-  override def toString = s"Leaf($value)"
-
-  override def pprint(ind: Int): String
-    = " " * ind + toString
-
-}
-
-case class LeafExt[T](val extension: T, val value: Point2) extends KdTree {
+case class Leaf[T](val p: Point2, val value: T) extends KdTree[T] {
 
   val size = 1
 
-  override def rangeQuery(r: lbnn.Range): List[Point2]
-  = if (r.inRange(value)) List(value) else List()
+  override def rangeQuery(range: Range): List[(Point2, T)]
+    = if (range.inRange(p)) List((p, value)) else List()
 
-  override def toString = s"LeafExt(${extension.toString}, $value)"
+  override def nodes : List[(Point2, T)]
+    = List((p, value))
+
+  override def toString
+    = s"Leaf($p, $value)"
 
   override def pprint(ind: Int): String
     = " " * ind + toString
@@ -79,22 +89,22 @@ case class LeafExt[T](val extension: T, val value: Point2) extends KdTree {
 
 /**
  *
- * @param d
- * @param med
+ * @param dimension
+ * @param median
  * @param ls
  * @param es
  * @param hs
  */
-case class Node(val d: Int,
-              val med: Double,
-              val ls: KdTree = Nil,
-              val es: KdTree = Nil,
-              val hs: KdTree = Nil) extends KdTree {
+case class Node[T](val dimension: Int,
+                   val median: Double,
+                   val ls: KdTree[T] = Nil,
+                   val es: KdTree[T] = Nil,
+                   val hs: KdTree[T] = Nil) extends KdTree[T] {
 
   def size = 1 + ls.size + es.size + hs.size
 
-  override def rangeQuery(r: lbnn.Range): List[Point2] = {
-    r.compareIth(d, med) match {
+  override def rangeQuery(r: lbnn.Range): List[(Point2, T)] = {
+    r.compareIth(dimension, median) match {
       case (-1,  _) => hs.rangeQuery(r)
       case ( 0,  _) => es.rangeQuery(r) ++ hs.rangeQuery(r)
       case ( 1, -1) => ls.rangeQuery(r) ++ es.rangeQuery(r) ++ hs.rangeQuery(r)
@@ -103,15 +113,25 @@ case class Node(val d: Int,
     }
   }
 
-  override def toString = s"Node($d, $med, $ls, $es, $hs)"
+  override def nodes: List[(Point2, T)] = {
+    // ls.nodes ++ es.nodes ++ hs.nodes
+    val rs = ListBuffer[(Point2, T)]()
+    rs ++= ls.nodes
+    rs ++= es.nodes
+    rs ++= hs.nodes
+    rs.result()
+  }
+
+  override def toString = s"Node($dimension, $median, $ls, $es, $hs)"
 
   override def pprint(ind: Int): String = {
     val indent = " " * ind
     val ls2 = ls.pprint(ind+2)
     val es2 = es.pprint(ind+2)
     val hs2 = hs.pprint(ind+2)
-    s"$indent$d, $med\nl:$ls2\ne:$es2\nh:$hs2"
+    s"$indent$dimension, $median\nl:$ls2\ne:$es2\nh:$hs2"
   }
+
 }
 
 /**
@@ -121,42 +141,21 @@ object KdTree {
 
   import Order.divideByMedian2
 
-  def build(d: Int, xs: List[Point2]): KdTree =
+  def build[T](d: Int, xs: List[(Point2, T)]): KdTree[T] =
     xs match {
       case List() => Nil
-      case List(x) => new Leaf(x)
+      case List(x) => new Leaf[T](x._1, x._2)
       case _ => {
         val j: Int = (d + 1) % 2
-        val p = divideByMedian2[Point2](p => p.ith(d))(xs)
-        val ls2 = build(j, p.ls)
-        val es2 = build(j, p.es)
-        val hs2 = build(j, p.hs)
-        new Node(d, p.m.ith(d), ls2, es2, hs2)
+        val p = divideByMedian2[(Point2, T)](p => p._1.ith(d))(xs)
+        new Node(d, p.m._1.ith(d), build(j, p.ls), build(j, p.es), build(j, p.hs))
       }
     }
 
-  def fromList(xs: List[Point2]): KdTree = {
+  def fromList[T](xs: List[(Point2, T)]): KdTree[T] = {
     xs match {
       case List() => Nil
       case _ => build(0, xs)
-    }
-  }
-
-  def buildExt[T](d: Int, xs: List[(T, Point2)]): KdTree =
-    xs match {
-      case List() => Nil
-      case List(x) => new LeafExt[T](x._1, x._2)
-      case _ => {
-        val j: Int = (d + 1) % 2
-        val p = divideByMedian2[(T, Point2)](p => p._2.ith(d))(xs)
-        new Node(d, p.m._2.ith(d), buildExt(j, p.ls), buildExt(j, p.es), buildExt(j, p.hs))
-      }
-    }
-
-  def fromListExt[T](xs: List[(T, Point2)]): KdTree = {
-    xs match {
-      case List() => Nil
-      case _ => buildExt(0, xs)
     }
   }
 

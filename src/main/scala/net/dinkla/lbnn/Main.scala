@@ -277,7 +277,7 @@ object Main {
         val xs = findAtPointInTime(srcSortedByUser, dt)
         println(xs.take(25).mkString("\n"))
 
-        val ps = xs.map { x => x._2 }.take(100).toList //collect().toList
+        val ps = xs.map { x => x.swap }.take(100).toList //collect().toList
 
         val kdt = KdTree.fromList(ps)
 
