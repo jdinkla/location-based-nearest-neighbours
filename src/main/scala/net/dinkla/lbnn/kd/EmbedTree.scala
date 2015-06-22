@@ -17,6 +17,7 @@ object EmbedTree {
     kdt match {
       case Nil => leaf(null)
       case Leaf(x) => leaf(x)
+      case LeafExt(v, x) => leaf(x)
       case Node(d, m, ls, es, hs) => {
         val p = Point2(d, m)
         val ss : Stream[Tree[Point2]] = Stream(embed(ls), embed(es), embed(hs))
