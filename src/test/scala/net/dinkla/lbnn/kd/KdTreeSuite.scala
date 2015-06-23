@@ -1,7 +1,7 @@
 package net.dinkla.lbnn.kd
 
 import net.dinkla.lbnn.geom.{Rectangle, Point2}
-import net.dinkla.lbnn.{Order}
+import net.dinkla.lbnn.utils.Order
 import Order._
 import org.scalatest.FunSuite
 

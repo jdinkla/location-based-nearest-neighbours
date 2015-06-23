@@ -16,7 +16,8 @@ object Point2 {
 }
 
 class Point2(val x: Double, val y: Double)
-  extends Point[Double] with Ordered[Point2] {
+  extends Point[Double]
+  with Ordered[Point2] {
 
   val dimension = 2
 

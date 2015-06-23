@@ -1,11 +1,10 @@
-package net.dinkla.lbnn
+package net.dinkla.lbnn.utils
 
-import net.dinkla.lbnn.Order._
+import Order._
 import net.dinkla.lbnn.TestUtils.ls1
 import net.dinkla.lbnn.geom.Point2
 import org.scalatest.FunSuite
 
-import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 /**

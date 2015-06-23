@@ -1,4 +1,4 @@
-package net.dinkla.lbnn
+package net.dinkla.lbnn.utils
 
 /**
  * Created by dinkla on 11/06/15.

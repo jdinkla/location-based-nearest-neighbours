@@ -1,10 +1,9 @@
 package net.dinkla.lbnn.spark
 
 import java.text.SimpleDateFormat
-
-import net.dinkla.lbnn.{Utilities}
 import net.dinkla.lbnn.geom.{Rectangle, Point2}
 import net.dinkla.lbnn.kd.KdTree
+import net.dinkla.lbnn.utils.Utilities
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.joda.time.{LocalDate, DateTime}

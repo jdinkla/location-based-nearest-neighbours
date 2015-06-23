@@ -16,7 +16,7 @@ object Main {
 
   def getSparkContextLocal(): SparkContext = {
     val conf = new SparkConf()
-      .setMaster("local[*]")    // TODO Master and #cores [*]
+      .setMaster("local")    // TODO Master and #cores [*]
       .setAppName("net.dinkla.lbnn")
       .set("spark.executor.memory", "7g")
       .set("spark.kryo.registrator", "net.dinkla.lbnn.spark.CustomKryoRegistrator")
@@ -39,7 +39,7 @@ object Main {
     import net.dinkla.lbnn.spark._
 
 //    val cmd: Command = new Download()
-    val cmd: Command = new CreateSample(1000)
+    //val cmd: Command = new CreateSample(1000)
 //    val cmd: Command = new SortByUser
 //    val cmd: Command = new SortByTime
 //    val cmd: Command = new StatsGlobal
@@ -47,7 +47,7 @@ object Main {
 //    val cmd: Command = new StatsUser
 //    val cmd: Command = new StatsGeo
 //    val cmd: Command = new Tmp
-//    val cmd: Command = new FindUser(10971)
+    val cmd: Command = new FindUser(10971)
 //    val cmd: Command = PointInTime("20100904000000")
 
     val local = true

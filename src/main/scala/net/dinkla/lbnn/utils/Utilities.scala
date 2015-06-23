@@ -1,11 +1,10 @@
-package net.dinkla.lbnn
+package net.dinkla.lbnn.utils
 
 import java.io.File
-
-import org.apache.commons.io.FileUtils
-import org.apache.hadoop.fs.{FileUtil, FileSystem, Path}
-import org.apache.spark.SparkContext
 import java.net.URI
+
+import org.apache.hadoop.fs.{FileSystem, FileUtil, Path}
+import org.apache.spark.SparkContext
 
 /**
  * Created by dinkla on 19/06/15.
@@ -37,9 +36,10 @@ object Utilities {
   import scala.language.postfixOps
 
   def download(url: String,  dest: String): Unit = {
-    import sys.process._
-    import java.net.URL
     import java.io.File
+    import java.net.URL
+
+    import sys.process._
     new URL(url) #> new File(dest) !!
   }
 

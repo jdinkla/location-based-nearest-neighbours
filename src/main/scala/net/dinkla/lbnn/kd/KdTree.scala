@@ -2,7 +2,7 @@ package net.dinkla.lbnn.kd
 
 import net.dinkla.lbnn
 import net.dinkla.lbnn.geom.{Point2, Range}
-import net.dinkla.lbnn.{Order}
+import net.dinkla.lbnn.utils.Order
 
 import scala.collection.mutable.ListBuffer
 

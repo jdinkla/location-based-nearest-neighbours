@@ -1,10 +1,10 @@
-package net.dinkla.lbnn
+package net.dinkla.lbnn.utils
 
 import net.dinkla.lbnn.geom.{Point2, Rectangle}
 import net.dinkla.lbnn.kd.KdTree
+import net.dinkla.lbnn.utils.Timer._
 
 import scala.util.Random
-import Timer._
 
 /**
  * Created by dinkla on 20/06/15.
