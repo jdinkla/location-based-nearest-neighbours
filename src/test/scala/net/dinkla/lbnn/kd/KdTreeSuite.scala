@@ -6,7 +6,6 @@ import org.scalatest.FunSuite
 
 import KdTree._
 
-import scalaz.Show
 import net.dinkla.lbnn.TestUtils.{ps1, ps2}
 
 /**

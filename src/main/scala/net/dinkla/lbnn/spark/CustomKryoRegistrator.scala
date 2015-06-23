@@ -15,15 +15,8 @@ class CustomKryoRegistrator extends KryoRegistrator {
 
     val dtSer = new JodaDateTimeSerializer()
     kryo.register(classOf[DateTime], dtSer)
-
-    //val ciSer = new FieldSerializer(kryo, classOf[CheckIn])
-    //ciSer.getField("date").setClass(classOf[DateTime], dtSer)
-    //kryo.register(classOf[CheckIn], ciSer)
-
     kryo.register(classOf[CheckIn])
-    kryo.register(classOf[CI])
-    kryo.register(classOf[CIO])
-
+//    kryo.register(classOf[CheckIn2])
   }
 
 }

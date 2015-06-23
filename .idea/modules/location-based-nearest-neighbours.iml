@@ -47,7 +47,6 @@
     <orderEntry type="library" name="SBT: com.thoughtworks.paranamer:paranamer:2.6:jar" level="project" />
     <orderEntry type="library" name="SBT: com.twitter:chill-java:0.5.0:jar" level="project" />
     <orderEntry type="library" name="SBT: com.twitter:chill_2.11:0.5.0:jar" level="project" />
-    <orderEntry type="library" name="SBT: com.typesafe:config:1.2.1:jar" level="project" />
     <orderEntry type="library" name="SBT: commons-beanutils:commons-beanutils:1.7.0:jar" level="project" />
     <orderEntry type="library" name="SBT: commons-beanutils:commons-beanutils-core:1.8.0:jar" level="project" />
     <orderEntry type="library" name="SBT: commons-cli:commons-cli:1.2:jar" level="project" />
@@ -57,8 +56,6 @@
     <orderEntry type="library" name="SBT: commons-digester:commons-digester:1.8:jar" level="project" />
     <orderEntry type="library" name="SBT: commons-httpclient:commons-httpclient:3.1:jar" level="project" />
     <orderEntry type="library" name="SBT: commons-io:commons-io:2.4:jar" level="project" />
-    <orderEntry type="library" name="SBT: commons-lang:commons-lang:2.5:jar" level="project" />
-    <orderEntry type="library" name="SBT: commons-logging:commons-logging:1.1.1:jar" level="project" />
     <orderEntry type="library" name="SBT: commons-net:commons-net:2.2:jar" level="project" />
     <orderEntry type="library" name="SBT: io.dropwizard.metrics:metrics-core:3.1.0:jar" level="project" />
     <orderEntry type="library" name="SBT: io.dropwizard.metrics:metrics-graphite:3.1.0:jar" level="project" />
@@ -87,7 +84,6 @@
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-auth:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-client:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-common:2.2.0:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-hdfs:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-app:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-common:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-core:2.2.0:jar" level="project" />
@@ -105,7 +101,6 @@
     <orderEntry type="library" name="SBT: org.apache.spark:spark-network-shuffle_2.11:1.4.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.spark:spark-unsafe_2.11:1.4.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.zookeeper:zookeeper:3.4.5:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.codehaus.jackson:jackson-core-asl:1.8.8:jar" level="project" />
     <orderEntry type="library" name="SBT: org.codehaus.jackson:jackson-jaxrs:1.8.8:jar" level="project" />
     <orderEntry type="library" name="SBT: org.codehaus.jackson:jackson-xc:1.8.8:jar" level="project" />
     <orderEntry type="library" name="SBT: org.codehaus.jettison:jettison:1.1:jar" level="project" />
@@ -149,16 +144,29 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="SBT: joda-time:joda-time:2.8.1:jar" level="project" />
+    <orderEntry type="library" name="SBT: commons-daemon:commons-daemon:1.0.13:jar" level="project" />
+    <orderEntry type="library" name="SBT: commons-lang:commons-lang:2.6:jar" level="project" />
+    <orderEntry type="library" name="SBT: commons-logging:commons-logging:1.1.3:jar" level="project" />
+    <orderEntry type="library" name="SBT: javax.servlet:servlet-api:2.5:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-hdfs:2.7.0:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.apache.htrace:htrace-core:3.1.0-incubating:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.codehaus.jackson:jackson-core-asl:1.9.13:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.codehaus.jackson:jackson-mapper-asl:1.9.13:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.fusesource.leveldbjni:leveldbjni-all:1.8:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.mortbay.jetty:jetty:6.1.26:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.scala-lang.modules:scala-parser-combinators_2.11:1.0.1:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.scala-lang.modules:scala-xml_2.11:1.0.1:jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="SBT: org.scala-lang.modules:scala-xml_2.11:1.0.2:jar" level="project" />
+    <orderEntry type="library" name="SBT: xerces:xercesImpl:2.9.1:jar" level="project" />
+    <orderEntry type="library" name="SBT: xml-apis:xml-apis:1.3.04:jar" level="project" />
     <orderEntry type="library" name="SBT: com.esotericsoftware:kryo:3.0.2:jar" level="project" />
     <orderEntry type="library" name="SBT: com.esotericsoftware:minlog:1.3.0:jar" level="project" />
     <orderEntry type="library" name="SBT: com.esotericsoftware:reflectasm:1.10.1:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.objenesis:objenesis:2.1:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.ow2.asm:asm:5.0.3:jar" level="project" />
     <orderEntry type="library" name="SBT: com.google.protobuf:protobuf-java:2.6.1:jar" level="project" />
     <orderEntry type="library" name="SBT: de.javakaffee:kryo-serializers:0.30:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.scala-lang.modules:scala-parser-combinators_2.11:1.0.4:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.scala-lang.modules:scala-xml_2.11:1.0.4:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.scalaz:scalaz-core_2.11:7.1.3:jar" level="project" />
+    <orderEntry type="library" name="SBT: joda-time:joda-time:2.8.1:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.objenesis:objenesis:2.1:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.ow2.asm:asm:5.0.3:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.typesafe:config:1.2.1:jar" level="project" />
   </component>
 </module>

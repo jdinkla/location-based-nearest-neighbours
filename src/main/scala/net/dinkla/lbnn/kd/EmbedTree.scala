@@ -1,17 +1,17 @@
 package net.dinkla.lbnn.kd
 
-import net.dinkla.lbnn.Point2
-
-import scalaz.Tree
+//import net.dinkla.lbnn.Point2
+//
+//import scalaz.Tree
 
 /**
  * Created by dinkla on 20/06/15.
  */
 object EmbedTree {
 
-  import scalaz.Tree
-  import scalaz.Tree.leaf
-  import scalaz.Tree.node
+//  import scalaz.Tree
+//  import scalaz.Tree.leaf
+//  import scalaz.Tree.node
 
 //  def embed[T <: AnyRef](kdt: KdTree): Tree[T] = {
 //    kdt match {

@@ -17,7 +17,8 @@ object Utilities {
   }
 
   def deldir(dir: String): Unit = {
-    FileUtils.deleteDirectory(new File(dir));
+    FileUtil.fullyDelete(new File(dir))
+//    FileUtils.deleteDirectory(new File(dir));
   }
 
   def exists(file: String): Boolean = {
