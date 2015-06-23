@@ -5,7 +5,7 @@ version := "1.0"
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
-  "org.apache.hadoop" % "hadoop-hdfs" % "2.6.0",
+  "org.apache.hadoop" % "hadoop-hdfs" % "2.7.0",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
   "org.apache.spark" %% "spark-core" % "1.4.0",
 //  "org.scalaz" %% "scalaz-core" % "7.1.3",
