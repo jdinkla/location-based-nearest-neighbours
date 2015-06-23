@@ -1,8 +1,5 @@
-package net.dinkla.lbnn
+package net.dinkla.lbnn.spark
 
-import java.util.Date
-
-import net.dinkla.lbnn.spark.CheckIn
 import org.joda.time.DateTime
 import org.scalatest.FunSuite
 

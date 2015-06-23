@@ -1,7 +1,8 @@
 package net.dinkla.lbnn.kd
 
 import net.dinkla.lbnn
-import net.dinkla.lbnn.{Point2, Order, Range}
+import net.dinkla.lbnn.geom.{Point2, Range}
+import net.dinkla.lbnn.{Order}
 
 import scala.collection.mutable.ListBuffer
 
@@ -103,7 +104,7 @@ case class Node[T](val dimension: Int,
 
   def size = 1 + ls.size + es.size + hs.size
 
-  override def rangeQuery(r: lbnn.Range): List[(Point2, T)] = {
+  override def rangeQuery(r: Range): List[(Point2, T)] = {
     r.compareIth(dimension, median) match {
       case (-1,  _) => hs.rangeQuery(r)
       case ( 0,  _) => es.rangeQuery(r) ++ hs.rangeQuery(r)

@@ -1,4 +1,4 @@
-package net.dinkla.lbnn
+package net.dinkla.lbnn.geom
 
 import org.scalatest.FunSuite
 

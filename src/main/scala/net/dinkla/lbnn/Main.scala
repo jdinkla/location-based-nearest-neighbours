@@ -14,14 +14,6 @@ import org.joda.time.{LocalDate, DateTime}
  */
 object Main {
 
-
-
-  //val props = new Properties("/local.properties")
-
-
-
-
-
   def getSparkContextLocal(): SparkContext = {
     val conf = new SparkConf()
       .setMaster("local[*]")    // TODO Master and #cores [*]
@@ -45,8 +37,6 @@ object Main {
   def main(args: Array[String]) {
 
     import net.dinkla.lbnn.spark._
-
-    //Source.fromURL(getClass.getResource("/my.properties"))
 
 //    val cmd: Command = new Download()
     val cmd: Command = new CreateSample(1000)

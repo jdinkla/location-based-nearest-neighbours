@@ -1,5 +1,7 @@
 package net.dinkla.lbnn
 
+import net.dinkla.lbnn.geom.Point2
+
 /**
  * Utilites for the tests.
  *

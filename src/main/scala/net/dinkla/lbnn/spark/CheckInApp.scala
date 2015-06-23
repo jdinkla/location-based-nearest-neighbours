@@ -2,7 +2,8 @@ package net.dinkla.lbnn.spark
 
 import java.text.SimpleDateFormat
 
-import net.dinkla.lbnn.{Rectangle, Point2, Utilities}
+import net.dinkla.lbnn.{Utilities}
+import net.dinkla.lbnn.geom.{Rectangle, Point2}
 import net.dinkla.lbnn.kd.KdTree
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD

@@ -1,9 +1,9 @@
 package net.dinkla.lbnn
 
+import net.dinkla.lbnn.geom.{Point2, Rectangle}
 import net.dinkla.lbnn.kd.KdTree
 
 import scala.util.Random
-import net.dinkla.lbnn.kd.KdTree._
 import Timer._
 
 /**

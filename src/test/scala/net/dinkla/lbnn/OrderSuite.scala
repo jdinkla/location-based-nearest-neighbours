@@ -2,6 +2,7 @@ package net.dinkla.lbnn
 
 import net.dinkla.lbnn.Order._
 import net.dinkla.lbnn.TestUtils.ls1
+import net.dinkla.lbnn.geom.Point2
 import org.scalatest.FunSuite
 
 import scala.collection.mutable.ArrayBuffer
