@@ -9,7 +9,7 @@ class ParametersSuite extends FunSuite {
 
   test("parameters") {
     val ps = new Parameters("/local.properties")
-    assert(ps.workDir == "tmp")
+    assert(ps.workDir == "temp")
   }
 
 }

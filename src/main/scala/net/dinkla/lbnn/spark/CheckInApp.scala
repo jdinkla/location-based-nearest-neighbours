@@ -11,9 +11,7 @@ import org.joda.time.{LocalDate, DateTime}
 /**
  * Created by Dinkla on 23.06.2015.
  */
-class CheckInApp(val properties: String, val sc: SparkContext) {
-
-  val props = new Parameters(properties)
+class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utilities) {
 
   val workDir = props.workDir
 
@@ -47,9 +45,9 @@ class CheckInApp(val properties: String, val sc: SparkContext) {
     val fraction = 1.0 * num / input.count()
     val top = input.sample(true, fraction)
     val intermediate = s"${src}.sample.tmp"
-    Utilities.deldir(intermediate)
+    utils.deldir(intermediate)
     top.saveAsTextFile(intermediate, classOf[org.apache.hadoop.io.compress.GzipCodec])
-    Utilities.merge(sc, intermediate, dest)   // TODO parts are gzipped, does merge work for partioned files?
+    utils.merge(intermediate, dest)   // TODO parts are gzipped, does merge work for partioned files?
   }
 
   def createSample2(src: String, dest: String, num: Int): Unit = {
@@ -57,9 +55,9 @@ class CheckInApp(val properties: String, val sc: SparkContext) {
     val fraction = 1.0 * num / input.count()
     val top = input.sample(true, fraction)
     val intermediate = s"${src}.sample.tmp"
-    Utilities.deldir(intermediate)
+    utils.deldir(intermediate)
     top.saveAsTextFile(intermediate, classOf[org.apache.hadoop.io.compress.GzipCodec])
-    //Utilities.merge(sc, intermediate, dest)   // TODO parts are gzipped, does merge work for partioned files?
+    //utils.merge(intermediate, dest)   // TODO parts are gzipped, does merge work for partioned files?
   }
 
   /**
@@ -193,39 +191,39 @@ class CheckInApp(val properties: String, val sc: SparkContext) {
 
   def run(cmd: Command): Unit = {
     cmd match {
-      case Download => {
-        Utilities.mkdir(workDir)
-        require(!Utilities.exists(srcFile)) // precondition not downloaded
-        Utilities.download(url, srcFile)
+      case Download() => {
+        utils.mkdir(workDir)
+        require(!utils.exists(srcFile)) // precondition not downloaded
+        utils.download(url, srcFile)
       }
       case CreateSample(n) => {
-        //require(Utilities.exists(srcFile)) // precondition downloaded
+        //require(utils.exists(srcFile)) // precondition downloaded
         createSample(srcFile, srcSmallSample, n)
       }
-      case SortByUser => {
-        require(Utilities.exists(srcFile)) // precondition downloaded
-        Utilities.deldir(srcSortedByUser)
+      case SortByUser() => {
+        require(utils.exists(srcFile)) // precondition downloaded
+        utils.deldir(srcSortedByUser)
         createSortedByUser(srcFile, srcSortedByUser)
       }
-      case SortByTime => {
-        require(Utilities.exists(srcSortedByUser)) // precondition srcSorted
-        Utilities.deldir(srcSortedByTime)
+      case SortByTime() => {
+        require(utils.exists(srcSortedByUser)) // precondition srcSorted
+        utils.deldir(srcSortedByTime)
         createSortedByTime(srcFile, srcSortedByTime)
       }
-      case StatsGlobal => {
-        require(Utilities.exists(srcSortedByUser)) // precondition srcSorted
+      case StatsGlobal() => {
+        require(utils.exists(srcSortedByUser)) // precondition srcSorted
         statsGlobal(srcSortedByUser)
       }
-      case StatsTime => {
-        require(Utilities.exists(srcSortedByTime)) // precondition srcSorted
+      case StatsTime() => {
+        require(utils.exists(srcSortedByTime)) // precondition srcSorted
         statsTime(srcSortedByTime)
       }
-      case StatsUser => {
-        require(Utilities.exists(srcSortedByUser)) // precondition srcSorted
+      case StatsUser() => {
+        require(utils.exists(srcSortedByUser)) // precondition srcSorted
         statsUser(srcSortedByUser)
       }
-      case StatsGeo => {
-        require(Utilities.exists(srcSortedByUser)) // precondition srcSorted
+      case StatsGeo() => {
+        require(utils.exists(srcSortedByUser)) // precondition srcSorted
         statsGeo(srcSortedByUser)
       }
       case FindUser(id) => {
@@ -252,12 +250,12 @@ class CheckInApp(val properties: String, val sc: SparkContext) {
         }
 
       }
-      case Tmp => {
+      case Tmp() => {
         findUser(srcSortedByUser, 10971)
       }
 
       //      case "prepare_save" => {
-      //        Utilities.deldir(srcSortedByUser)
+      //        utils.deldir(srcSortedByUser)
       //        val sc : SparkContext = getSparkContext()
       //
       //        val input: RDD[String] = sc.textFile(testData)
@@ -271,7 +269,7 @@ class CheckInApp(val properties: String, val sc: SparkContext) {
       //      case "prepare_1" => {
       //        val sc : SparkContext = getSparkContext()
       //        // load
-      //        Utilities.deldir(tmpOutputDir)
+      //        utils.deldir(tmpOutputDir)
       //        //      val rdd = sc.objectFile[CI](tmpInputSortedDir)
       //        //val rdd = sc.objectFile[CheckIn](tmpInputSortedDir)
       //        val rdd = sc.objectFile[CIO](srcSortedByUser)

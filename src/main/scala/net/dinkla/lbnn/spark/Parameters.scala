@@ -11,8 +11,7 @@ class Parameters(val config: String) {
 
   lazy val properties = {
     val properties = new Properties()
-    val url: URL = getClass.getResource(config)
-    val in = new FileInputStream(url.getFile())
+    val in = getClass.getResourceAsStream(config)
     properties.load(in)
     in.close()
     properties

@@ -4,14 +4,15 @@ package net.dinkla.lbnn.spark
  * Created by Dinkla on 23.06.2015.
  */
 abstract sealed class Command
-case object Download extends Command
+object NullCommand extends Command
+case class Download() extends Command
 case class CreateSample(val num: Int) extends Command
-case object SortByUser extends Command
-case object SortByTime extends Command
-case object StatsGlobal extends Command
-case object StatsTime extends Command
-case object StatsUser extends Command
-case object StatsGeo extends Command
-case object Tmp extends Command
+case class SortByUser() extends Command
+case class SortByTime() extends Command
+case class StatsGlobal() extends Command
+case class StatsTime() extends Command
+case class StatsUser() extends Command
+case class StatsGeo() extends Command
+case class Tmp() extends Command
 case class FindUser(val name: Int) extends Command
 case class PointInTime(val dt: String) extends Command
