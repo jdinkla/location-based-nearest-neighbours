@@ -35,14 +35,14 @@ class KdTreeSuite extends FunSuite {
   test("fromList many #2") {
     val kdt: KdTree[Int] = fromList(ps2.zipWithIndex)
     assert(kdt.size >= ps2.size)
-    println(kdt.pprint(0))
+//    println(kdt.pprint(0))
   }
 
   test("rangeQuery #1") {
     val kdt = fromList(ps1.zipWithIndex)
     val r = new Rectangle(Point2(2, 0), Point2(6,5))
     val rs = kdt.rangeQuery(r)
-    println(rs)
+//    println(rs)
   }
 
   test("rangeQuery #2") {

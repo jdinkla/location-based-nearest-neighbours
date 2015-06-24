@@ -1,6 +1,6 @@
 package net.dinkla.lbnn.spark
 
-import org.joda.time.DateTime
+import net.dinkla.lbnn.utils.TextDate
 import org.scalatest.FunSuite
 
 /**
@@ -18,20 +18,15 @@ class CheckInSuite extends FunSuite {
   test("testParse") {
     val c = CheckIn.parse(parts)
     assert(c.id == 0)
-    assert(c.date.getYear() == 2010)
-    assert(c.date.getMonthOfYear() == 10)
-    assert(c.date.getDayOfMonth() == 12)
-    assert(c.date.getHourOfDay() == 23)
-    assert(c.date.getMinuteOfHour() == 58)
-    assert(c.date.getSecondOfMinute() == 3)
+    assert(c.date.value == "20101012235803")
     assert(c.locX == 30.261599404)
     assert(c.locY == -97.7585805953)
     assert(c.locId == 15372)
   }
 
   test("testOrdering") {
-    val dt1 = new DateTime(1000L*1000)
-    val dt2 = new DateTime(1000L*1000*10)
+    val dt1 = new TextDate("20111111")
+    val dt2 = new TextDate("20121212")
     val ci1 = new CheckIn(0, dt1, 0, 0, 0)
     val ci2 = new CheckIn(0, dt2, 0, 0, 0)
     val ci3 = new CheckIn(1, dt1, 0, 0, 0)
@@ -43,7 +38,6 @@ class CheckInSuite extends FunSuite {
     assert(ci2 < ci3)
     assert(ci2 < ci4)
     assert(ci3 < ci4)
-
   }
 
 }

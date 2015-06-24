@@ -1,12 +1,10 @@
 package net.dinkla.lbnn.spark
 
-import java.text.SimpleDateFormat
 import net.dinkla.lbnn.geom.{Rectangle, Point2}
 import net.dinkla.lbnn.kd.KdTree
-import net.dinkla.lbnn.utils.Utilities
+import net.dinkla.lbnn.utils.{TextDate, Utilities}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.joda.time.{LocalDate, DateTime}
 
 /**
  * Created by Dinkla on 23.06.2015.
@@ -24,14 +22,6 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
   val srcSortedByUser = props.srcSortedByUser
   val srcSortedByTime = props.srcSortedByTime
   val tmpOutputDir = props.tmpOutputDir
-
-  val dateTimeOrd = new Ordering[DateTime] {
-    def compare(x: DateTime, y: DateTime) = x.getMillis().compare(y.getMillis())
-  }
-
-  val localDateOrd = new Ordering[LocalDate] {
-    def compare(x: LocalDate, y: LocalDate) = x.compareTo(y)
-  }
 
   /**
    * creates a 'sample' of ca num lines. Not exactly num lines
@@ -79,7 +69,6 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
     val input: RDD[String] = sc.textFile(src)
     val tokenized = input.map(CheckIn.split)
     val parsed = tokenized.map(CheckIn.parse)
-    implicit val ord = dateTimeOrd
     val sorted = parsed.sortBy(c => c.date, true)
     sorted.saveAsObjectFile(dest)
   }
@@ -99,7 +88,6 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
     val allDates = input.map (c => c.date)
     allDates.persist()
 
-    implicit val ord = dateTimeOrd
     val minDate = allDates.min()
     val maxDate = allDates.max()
 
@@ -113,25 +101,16 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
     println(s"### max date: ${maxDate}")
   }
 
-  def countPerDateFormat(format: String, input: RDD[CheckIn]): RDD[(String, Int)] = {
-    val fmt = new SimpleDateFormat(format)
-    def f(dt: DateTime): String = fmt.format(dt.toDate())
-
-    val pairs: RDD[(String, Int)] = input.map { x => (f(x.date), 1) }
-    val sums = pairs.reduceByKey( _ + _ )
-    sums
-  }
-
   def statsTime(src: String): Unit = {
     val input: RDD[CheckIn] = sc.objectFile(src)
 
-    val sumsDD = countPerDateFormat("yyyyMMdd", input)
-    println(sumsDD.sortBy(c => c._2, false).take(10).mkString("\n"))
+    val pairsYMD: RDD[(String, Int)] = input.map { x => (x.date.getDate, 1) }
+    val sumsYMD = pairsYMD.reduceByKey( _ + _ )
+    println(sumsYMD.sortBy(c => c._2, false).take(10).mkString("\n"))
 
-    val pairsMM = sumsDD.map { x => (x._1.substring(0, 6), x._2)}
+    val pairsMM = sumsYMD.map { x => (x._1.substring(0, 6), x._2)}
     val sumsMM = pairsMM.reduceByKey { _ + _ }
 
-    //val sumsMM = countPerDateFormat("yyyyMM", input)
     println(sumsMM.sortBy(c => c._2, false).take(10).mkString("\n"))
   }
 
@@ -172,11 +151,10 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
       println(rdd2.collect().mkString("\n"))
     }
 
-    val format = new SimpleDateFormat("yyyyMMddhhmmss")
-    val pit: DateTime = new DateTime(format.parse(now))
+    val pit = new TextDate(now)
     val input: RDD[CheckIn] = sc.objectFile(src, 1)
 
-    val filtered = input.filter { x => x.date.compareTo(pit) <= 0 }       // ignore the data newer than now
+    val filtered = input.filter { x => x.date.compareTo(pit) <= 0 }       // ignore the data newer than 'now'
     //    debugFilterPrint[CheckIn](p => p.id == 10971)(filtered)
 
     val pairs: RDD[Pair] = filtered.map { x => (x.id, x)}                 // pair
