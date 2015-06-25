@@ -16,6 +16,7 @@ class CheckInSuite extends FunSuite {
   }
 
   test("testParse") {
+    //println(s"parts=${parts.foreach(println)}")
     val c = CheckIn.parse(parts)
     assert(c.id == 0)
     assert(c.date.value == "20101012235803")

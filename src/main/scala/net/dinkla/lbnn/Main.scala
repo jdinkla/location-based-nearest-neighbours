@@ -4,6 +4,8 @@ import net.dinkla.lbnn.utils.{Utilities, Parameters, LocalUtilities, HdfsUtiltie
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 
+import scala.IllegalArgumentException
+
 /**
  * Created by dinkla on 19/06/15.
  */
@@ -26,15 +28,7 @@ object Main {
     val app = new CheckInApp(props)
     val cmd = if (args.size > 1) app.parse(args.tail)
               else throw new IllegalArgumentException("command needed")
-
-    // Spark
-    val conf = new SparkConf()
-      .setMaster(props.getOrDefault("spark.master", "local"))
-      .setAppName(props.getOrDefault("spark.appname","net.dinkla.lbnn"))
-      .set("spark.executor.memory", props.getOrDefault("spark.executor.memory", "7g"))
-      .set("spark.kryo.registrator", "net.dinkla.lbnn.spark.CustomKryoRegistrator")
-      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-    val sc = new SparkContext(conf)
+    val sc = SparkUtils.getSparkContext(props)
 
     // filesystem
     // TODO dynamic lookup of class

@@ -5,10 +5,11 @@ package net.dinkla.lbnn.spark
  */
 abstract sealed class Command
 object NullCommand extends Command
-case class Download() extends Command
+case class Download(val url: String, val dest: String) extends Command
 case class CreateSample(val num: Int) extends Command
 case class SortByUser() extends Command
 case class SortByTime() extends Command
+case class Sort() extends Command
 case class StatsGlobal() extends Command
 case class StatsTime() extends Command
 case class StatsUser() extends Command
