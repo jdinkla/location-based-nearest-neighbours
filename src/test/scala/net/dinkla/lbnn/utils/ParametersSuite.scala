@@ -7,13 +7,13 @@ import org.scalatest.FunSuite
  */
 class ParametersSuite extends FunSuite {
 
+  val ps = new Parameters("local.properties")
+
   test("constr & get") {
-    val ps = new Parameters("/local.properties")
     assert(ps.get("workDir") == "temp")
   }
 
   test("constr & getOrDefault") {
-    val ps = new Parameters("/local.properties")
     assert(ps.getOrDefault("workDir", "xyz") == "temp")
     assert(ps.getOrDefault("WorkDir", "xyz") == "xyz")
   }

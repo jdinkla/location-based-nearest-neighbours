@@ -9,19 +9,24 @@ import org.apache.spark.rdd.RDD
 /**
  * Created by Dinkla on 23.06.2015.
  */
-class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utilities) {
+class CheckInApp(val props: Parameters) extends App {
+
+  type Command = net.dinkla.lbnn.spark.Command
 
   val workDir = props.get("workDir")
 
-  val testRun: Boolean = true
+  val testRun = props.getOrDefault("testRun", "false")
+  def testData = if (testRun == "true") srcSmallSample else srcFile
 
-  def testData = if (testRun) srcSmallSample else srcFile
   val url = props.get("url")
   val srcFile = props.get("srcFile")
   val srcSmallSample = props.get("srcSmallSample")
   val srcSortedByUser = props.get("srcSortedByUser")
   val srcSortedByTime = props.get("srcSortedByTime")
   val tmpOutputDir = props.get("tmpOutputDir")
+
+  var sc: SparkContext = null
+  var utils: Utilities = null
 
   /**
    * creates a 'sample' of ca num lines. Not exactly num lines
@@ -54,10 +59,9 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
    *
    * @param src
    * @param dest
-   * @tparam T
    * @return
    */
-  def createSortedByUser(src: String, dest: String) = {
+  def sortByUser(src: String, dest: String) = {
     val input: RDD[String] = sc.textFile(src)
     val tokenized = input.map(CheckIn.split)
     val parsed = tokenized.map(CheckIn.parse)
@@ -65,7 +69,7 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
     sorted.saveAsObjectFile(dest)
   }
 
-  def createSortedByTime(src: String, dest: String) = {
+  def sortByTime(src: String, dest: String) = {
     val input: RDD[String] = sc.textFile(src)
     val tokenized = input.map(CheckIn.split)
     val parsed = tokenized.map(CheckIn.parse)
@@ -147,7 +151,6 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
    * @param now
    * @return
    */
-
   def findAtPointInTime(src: String, now: String): RDD[(CheckIn.CustomerId, Point2)] = {
     type Pair = (Int, CheckIn)
 
@@ -172,7 +175,9 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
     xs
   }
 
-  def run(cmd: Command): Unit = {
+  def run(cmd: Command, sc: SparkContext, utils: Utilities): Unit = {
+    this.sc = sc
+    this.utils = utils
     cmd match {
       case Download() => {
         utils.mkdir(workDir)
@@ -186,12 +191,12 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
       case SortByUser() => {
         require(utils.exists(srcFile)) // precondition downloaded
         utils.deldir(srcSortedByUser)
-        createSortedByUser(srcFile, srcSortedByUser)
+        sortByUser(srcFile, srcSortedByUser)
       }
       case SortByTime() => {
         require(utils.exists(srcSortedByUser)) // precondition srcSorted
         utils.deldir(srcSortedByTime)
-        createSortedByTime(srcFile, srcSortedByTime)
+        sortByTime(srcFile, srcSortedByTime)
       }
       case StatsGlobal() => {
         require(utils.exists(srcSortedByUser)) // precondition srcSorted
@@ -265,9 +270,21 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
     }
   }
 
-}
-
-object CheckInApp {
-
+  def parse(xs: Array[String]): Command = {
+    xs match {
+      case Array("download") => new Download()
+      case Array("sample", ns) =>new CreateSample(ns.toInt)
+      case Array("sort-by-user") => new SortByUser()
+      case Array("sort-by-time") => new SortByTime()
+      case Array("global") => new StatsGlobal()
+      case Array("time") => new StatsTime()
+      case Array("user") => new StatsUser()
+      case Array("geo") => new StatsGeo()
+      case Array("tmp") => new Tmp()
+      case Array("find", ns) => new FindUser(ns.toInt)
+      case Array("pit", ns) => new PointInTime(ns)
+      case _ => NullCommand
+    }
+  }
 
 }

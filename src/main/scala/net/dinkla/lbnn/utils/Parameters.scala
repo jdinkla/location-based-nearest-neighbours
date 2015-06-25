@@ -1,5 +1,6 @@
 package net.dinkla.lbnn.utils
 
+import java.io.FileInputStream
 import java.util.Properties
 
 /**
@@ -9,7 +10,8 @@ class Parameters(val config: String) {
 
   lazy val properties = {
     val properties = new Properties()
-    val in = getClass.getResourceAsStream(config)
+    val in = new FileInputStream(config)
+    //val in = getClass.getResourceAsStream(config)
     properties.load(in)
     in.close()
     properties
