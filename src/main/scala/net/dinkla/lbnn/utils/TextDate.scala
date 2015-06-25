@@ -31,6 +31,12 @@ class TextDate(v: String)
 
   def getTime: String = value.substring(8, 14)
 
+  def getHour: String = value.substring(8, 10)
+
+  def getMinute: String = value.substring(10, 12)
+
+  def getSeconds: String = value.substring(12, 14)
+
   override def equals(obj: scala.Any): Boolean = {
     obj match {
       case that: TextDate => value equals that.value

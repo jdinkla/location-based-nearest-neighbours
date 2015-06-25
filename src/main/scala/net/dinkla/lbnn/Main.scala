@@ -1,6 +1,6 @@
 package net.dinkla.lbnn
 
-import net.dinkla.lbnn.utils.{LocalUtilities, HdfsUtilties}
+import net.dinkla.lbnn.utils.{Parameters, LocalUtilities, HdfsUtilties}
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 
@@ -8,27 +8,6 @@ import org.apache.spark.SparkContext
  * Created by dinkla on 19/06/15.
  */
 object Main {
-
-  def getSparkContextLocal(): SparkContext = {
-    val conf = new SparkConf()
-      .setMaster("local")    // TODO Master and #cores [*]
-      .setAppName("net.dinkla.lbnn")
-      .set("spark.executor.memory", "7g")
-      .set("spark.kryo.registrator", "net.dinkla.lbnn.spark.CustomKryoRegistrator")
-      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-    new SparkContext(conf)
-  }
-
-  def getSparkContextRemote(): SparkContext = {
-    val conf = new SparkConf()
-      .setMaster("spark://v1:7077")
-      .setAppName("net.dinkla.lbnn")
-      //.set("spark.executor.memory", "7g")
-      .set("spark.kryo.registrator", "net.dinkla.lbnn.spark.CustomKryoRegistrator")
-      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-
-    new SparkContext(conf)
-  }
 
   import net.dinkla.lbnn.spark._
 
@@ -52,26 +31,30 @@ object Main {
   def main(args: Array[String]) {
 
     val cmd = if (args.size > 0) parse(args) else throw new IllegalArgumentException("command needed")
-
-    println(s"cmd=$cmd")
-
-//    val cmd: Command = new Download()
-//    val cmd: Command = new CreateSample(1000)
-//    val cmd: Command = new FindUser(10971)
-//    val cmd: Command = PointInTime("20100904000000")
-
     val local = false
 
     if (local) {
-      val sc = getSparkContextLocal()
-      val utils = new LocalUtilities(sc.hadoopConfiguration)
       val props = new Parameters("/local.properties")
+      val conf = new SparkConf()
+        .setMaster("local")               // TODO local[*]
+        .setAppName("net.dinkla.lbnn")
+        .set("spark.executor.memory", "7g")
+        .set("spark.kryo.registrator", "net.dinkla.lbnn.spark.CustomKryoRegistrator")
+        .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      val sc = new SparkContext(conf)
+      val utils = new LocalUtilities(sc.hadoopConfiguration)
       val app = new CheckInApp(props, sc, utils)
       app.run(cmd)
     } else {
-      val sc = getSparkContextRemote()
-      val utils = new HdfsUtilties(sc.hadoopConfiguration)
       val props = new Parameters("/cluster.properties")
+      val conf = new SparkConf()
+        .setMaster("spark://v1:7077")
+        .setAppName("net.dinkla.lbnn")
+        .set("spark.executor.memory", props.getOrDefault("spark.executor.memory", "2g"))
+        .set("spark.kryo.registrator", "net.dinkla.lbnn.spark.CustomKryoRegistrator")
+        .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      val sc = new SparkContext(conf)
+      val utils = new HdfsUtilties(sc.hadoopConfiguration)
       val app = new CheckInApp(props, sc, utils)
       app.run(cmd)
     }

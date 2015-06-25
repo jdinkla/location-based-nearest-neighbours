@@ -30,6 +30,9 @@ object Order {
 
     override def toString: String = s"($median, $ls, $es, $hs)"
 
+    def map[S](f: T => S): Partition[S]
+      = new Partition(f(median), ls map f, es map f, hs map f)
+
   }
 
   /**
@@ -110,19 +113,28 @@ object Order {
     partition32(f)(median2(f)(xs), xs)
   }
 
+  /**
+   * to test the recursive behaviour
+   * @param xs
+   * @tparam T
+   * @return
+   */
   def rec[T <% Ordered[T]](xs: Seq[T]): List[List[T]] = {
     xs match {
       case List() => List()
       case List(x) => List(List(x))
       case _ => {
         val p = divideByMedian[T](xs)
-        //println(s"p=${p.ls.size}, ${p.es.size}, ${p.hs.size}")
-        if (!(p.ls.size < xs.size && p.es.size < xs.size && p.hs.size < xs.size)) {
-          assert(p.ls.size < xs.size && p.es.size < xs.size && p.hs.size < xs.size)
-        }
+        checkPartitions(xs, p)
         List(rec(p.ls), rec(p.es), rec(p.hs)).flatten
       }
     }
   }
 
+  def checkPartitions[T <% Ordered[T]](xs: Seq[T], p: Partition[T]): Unit = {
+    //println(s"p=${p.ls.size}, ${p.es.size}, ${p.hs.size}")
+    if (!(p.ls.size < xs.size && p.es.size < xs.size && p.hs.size < xs.size)) {
+      assert(p.ls.size < xs.size && p.es.size < xs.size && p.hs.size < xs.size)
+    }
+  }
 }

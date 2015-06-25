@@ -17,6 +17,9 @@ class TextDateSuite extends FunSuite {
     assert(d1.getYYYYMM == "200102")
     assert(d1.getDate == "20010203")
     assert(d1.getTime == "000000")
+    assert(d1.getHour == "00")
+    assert(d1.getMinute == "00")
+    assert(d1.getSeconds == "00")
   }
 
   test("constr #2") {
@@ -26,6 +29,9 @@ class TextDateSuite extends FunSuite {
     assert(d1.getYYYYMM == "200102")
     assert(d1.getDate == "20010203")
     assert(d1.getTime == "123456")
+    assert(d1.getHour == "12")
+    assert(d1.getMinute == "34")
+    assert(d1.getSeconds == "56")
   }
 
   test("constr #3") {
@@ -37,6 +43,9 @@ class TextDateSuite extends FunSuite {
     assert(d1.getYYYYMM == "200102")
     assert(d1.getDate == "20010203")
     assert(d1.getTime == "123456")
+    assert(d1.getHour == "12")
+    assert(d1.getMinute == "34")
+    assert(d1.getSeconds == "56")
   }
 
 }

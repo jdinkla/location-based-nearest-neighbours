@@ -149,6 +149,7 @@ object KdTree {
       case _ => {
         val j: Int = (d + 1) % 2
         val p = divideByMedian2[(Point2, T)](p => p._1.ith(d))(xs)
+        Order.checkPartitions(xs.map { _._1 }, p.map { _._1 })
         new Node(d, p.median._1.ith(d), build(j, p.ls), build(j, p.es), build(j, p.hs))
       }
     }

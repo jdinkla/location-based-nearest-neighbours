@@ -2,7 +2,7 @@ package net.dinkla.lbnn.spark
 
 import net.dinkla.lbnn.geom.{Rectangle, Point2}
 import net.dinkla.lbnn.kd.KdTree
-import net.dinkla.lbnn.utils.{TextDate, Utilities}
+import net.dinkla.lbnn.utils.{Parameters, TextDate, Utilities}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
@@ -11,17 +11,17 @@ import org.apache.spark.rdd.RDD
  */
 class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utilities) {
 
-  val workDir = props.workDir
+  val workDir = props.get("workDir")
 
   val testRun: Boolean = true
 
   def testData = if (testRun) srcSmallSample else srcFile
-  val url = props.url
-  val srcFile = props.srcFile
-  val srcSmallSample = props.srcSmallSample
-  val srcSortedByUser = props.srcSortedByUser
-  val srcSortedByTime = props.srcSortedByTime
-  val tmpOutputDir = props.tmpOutputDir
+  val url = props.get("url")
+  val srcFile = props.get("srcFile")
+  val srcSmallSample = props.get("srcSmallSample")
+  val srcSortedByUser = props.get("srcSortedByUser")
+  val srcSortedByTime = props.get("srcSortedByTime")
+  val tmpOutputDir = props.get("tmpOutputDir")
 
   /**
    * creates a 'sample' of ca num lines. Not exactly num lines
@@ -112,6 +112,11 @@ class CheckInApp(val props: Parameters, val sc: SparkContext, val utils: Utiliti
     val sumsMM = pairsMM.reduceByKey { _ + _ }
 
     println(sumsMM.sortBy(c => c._2, false).take(10).mkString("\n"))
+
+    val pairsHH: RDD[(String, Int)] = input.map { x => (x.date.getHour, 1) }
+    val sumsHH = pairsMM.reduceByKey { _ + _ }
+
+    println(sumsHH.sortBy(c => c._2, false).take(10).mkString("\n"))
   }
 
   def statsUser(src: String): Unit = {
