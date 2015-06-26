@@ -48,4 +48,15 @@ class HdfsUtilties(val hc: Configuration) extends Utilities {
     destFS.copyFromLocalFile(new Path(local), new Path(dest))
   }
 
+  def write(path: String, contents: String): Unit = {
+
+    import org.apache.hadoop.util.NativeCrc32
+
+    val fs = FileSystem.get(new URI(path), hc)
+    val out = fs.create(new Path(path), true)
+    out.writeUTF(contents)
+    out.close()
+  }
+
+
 }

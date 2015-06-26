@@ -102,32 +102,29 @@ class CheckInApp(val props: Parameters) extends App {
     sortedTime.saveAsObjectFile(destTime)
   }
 
+  val srcReportStatsGlobal = "hdfs://v1/tmp/report_global_stats.csv"
+
   def statsGlobal(src: String): Unit = {
     val input: RDD[CheckIn] = sc.objectFile(src)
-
     val numLines = input.count
-    println(s"### #lines: ${numLines}")
 
     val allUsers = input.map (c => c.id)
     val distinctUsers = allUsers.distinct()
-
     val numDistinctUsers = distinctUsers.count
-    println(s"### #users: ${numDistinctUsers}")
 
     val allDates = input.map (c => c.date)
     allDates.persist()
-
     val minDate = allDates.min()
     val maxDate = allDates.max()
 
-    println(s"### min date: ${minDate}")
-    println(s"### max date: ${maxDate}")
-
     // report
-    println(s"### #lines: ${numLines}")
-    println(s"### #users: ${numDistinctUsers}")
-    println(s"### min date: ${minDate}")
-    println(s"### max date: ${maxDate}")
+    val sb = new StringBuilder()
+    sb ++= s"key;value"
+    sb ++= s"number of lines;${numLines}"
+    sb ++= s"number of users;${numDistinctUsers}"
+    sb ++= s"minimal date;${minDate}"
+    sb ++= s"maximal date;${maxDate}"
+    utils.write(srcReportStatsGlobal, sb.result())
   }
 
   val srcSumsYMDpart = "hdfs://v1/tmp/srcSumsYMDpart.txt"
@@ -228,6 +225,8 @@ class CheckInApp(val props: Parameters) extends App {
     xs
   }
 
+  val srcTestWrite = "hdfs://v1/tmp/testwrite.txt"
+
   def run(cmd: Command, sc: SparkContext, utils: Utilities): Unit = {
     this.sc = sc
     this.utils = utils
@@ -299,6 +298,9 @@ class CheckInApp(val props: Parameters) extends App {
       case Tmp() => {
         findUser(srcSortedByUser, 10971)
       }
+      case TestWrite() => {
+        utils.write(srcTestWrite, "This is a test.")
+      }
       case _ => {
         println(s"Unknown command $cmd")
       }
@@ -320,6 +322,7 @@ class CheckInApp(val props: Parameters) extends App {
       case Array("tmp") => new Tmp()
       case Array("find", ns) => new FindUser(ns.toInt)
       case Array("pit", ns) => new PointInTime(ns)
+      case Array("testwrite") => new TestWrite()
       case _ => NullCommand
     }
   }

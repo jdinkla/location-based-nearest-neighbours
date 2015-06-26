@@ -17,10 +17,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.10/resource_managed/main" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.10/resource_managed/test" type="java-test-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/../../target/resolution-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/../../target/scala-2.11" />
-      <excludeFolder url="file://$MODULE_DIR$/../../target/streams" />
-      <excludeFolder url="file://$MODULE_DIR$/../../target/test-reports" />
+      <excludeFolder url="file://$MODULE_DIR$/../../target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -81,7 +78,6 @@
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-annotations:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-auth:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-client:2.2.0:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-common:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-app:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-common:2.2.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-core:2.2.0:jar" level="project" />
@@ -310,5 +306,31 @@
     <orderEntry type="library" scope="PROVIDED" name="SBT: org.spark-project.akka:akka-remote_2.10:2.3.4-spark:jar" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="SBT: org.spark-project.akka:akka-slf4j_2.10:2.3.4-spark:jar" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="SBT: com.google.protobuf:protobuf-java:2.5.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: com.google.code.findbugs:jsr305:3.0.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: com.google.code.gson:gson:2.2.4:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: com.google.guava:guava:16.0.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: com.jamesmurty.utils:java-xmlbuilder:0.4:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: com.jcraft:jsch:0.1.42:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: commons-codec:commons-codec:1.6:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: commons-net:commons-net:3.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: javax.servlet.jsp:jsp-api:2.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: javax.xml.stream:stax-api:1.0-2:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: junit:junit:3.8.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: net.java.dev.jets3t:jets3t:0.9.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.curator:curator-client:2.7.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.curator:curator-framework:2.7.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.curator:curator-recipes:2.7.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.directory.api:api-asn1-api:1.0.0-M20:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.directory.api:api-util:1.0.0-M20:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.directory.server:apacheds-i18n:2.0.0-M15:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.directory.server:apacheds-kerberos-codec:2.0.0-M15:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-annotations:2.7.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-auth:2.7.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-common:2.7.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.httpcomponents:httpclient:4.2.5:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.httpcomponents:httpcore:4.2.4:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.zookeeper:zookeeper:3.4.6:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.codehaus.jackson:jackson-jaxrs:1.8.3:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.codehaus.jackson:jackson-xc:1.8.3:jar" level="project" />
   </component>
 </module>

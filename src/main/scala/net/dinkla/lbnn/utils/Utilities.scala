@@ -12,6 +12,8 @@ trait Utilities {
 
   def download(url: String,  dest: String): Unit
 
+  def write(path: String, contents: String): Unit
+
 }
 
 

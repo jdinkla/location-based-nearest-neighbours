@@ -42,5 +42,9 @@ class LocalUtilities(val hc: Configuration) extends Utilities {
     new URL(url) #> new File(dest) !!
   }
 
+  def write(path: String, contents: String): Unit = {
+    // TODO impl write
+  }
+
 }
 
