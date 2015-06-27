@@ -6,6 +6,8 @@ trait Utilities {
 
   def deldir(dir: String): Unit
 
+  def delete(ps: String*): Unit = for (p <- ps) { deldir(p) }
+
   def exists(file: String): Boolean
 
   def merge(src: String, dst: String): Unit

@@ -17,9 +17,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.10/resource_managed/main" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.10/resource_managed/test" type="java-test-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/../../target/resolution-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/../../target/streams" />
-      <excludeFolder url="file://$MODULE_DIR$/../../target/test-reports" />
+      <excludeFolder url="file://$MODULE_DIR$/../../target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -164,22 +162,18 @@
     <orderEntry type="library" scope="PROVIDED" name="SBT: org.htrace:htrace-core:3.0.4:jar" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="SBT: tomcat:jasper-compiler:5.5.23:jar" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="SBT: tomcat:jasper-runtime:5.5.23:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: com.google.inject.extensions:guice-servlet:3.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: com.sun.jersey:jersey-client:1.9:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-client:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-app:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-common:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-core:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-jobclient:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-shuffle:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-api:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-client:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-common:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-server-common:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-server-nodemanager:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-server-web-proxy:2.6.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.codehaus.jackson:jackson-jaxrs:1.9.13:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.codehaus.jackson:jackson-xc:1.9.13:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="SBT: org.fusesource.leveldbjni:leveldbjni-all:1.8:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: com.sun.jersey.jersey-test-framework:jersey-test-framework-grizzly2:1.9:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-client:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-app:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-common:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-core:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-jobclient:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-mapreduce-client-shuffle:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-api:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-client:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-common:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.apache.hadoop:hadoop-yarn-server-common:2.2.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.codehaus.jackson:jackson-jaxrs:1.8.3:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.codehaus.jackson:jackson-xc:1.8.3:jar" level="project" />
   </component>
 </module>

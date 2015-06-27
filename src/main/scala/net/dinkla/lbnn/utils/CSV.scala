@@ -3,6 +3,9 @@ package net.dinkla.lbnn.utils
 import scala.collection.mutable.ListBuffer
 
 /**
+ *
+ * TODO non functional
+ *
  * Created by Dinkla on 27.06.2015.
  */
 class CSV(val headers: Seq[String], val crlf: String = "\r\n", val sep: String =";") {

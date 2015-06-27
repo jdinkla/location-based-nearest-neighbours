@@ -9,12 +9,16 @@ class CSVSuite extends FunSuite {
 
   test("toString") {
     val csv = new CSV("key", "value")
-    csv.add("number of lines", 1)
-    csv.add("number of users", 2)
-    csv.add("minimal datetime", 3)
-    csv.add("minimal datetime", 4)
-    println(csv.toString())
+    csv.add("a", 1)
+    csv.add("b", 2)
+    assert(csv.toString() == "key;value\r\na;1\r\nb;2\r\n")
+  }
 
+  test("toString with non default crlf and sep") {
+    val csv = new CSV(List("key", "value"), crlf="\r", sep=",")
+    csv.add("a", 1)
+    csv.add("b", 2)
+    assert(csv.toString() == "key,value\ra,1\rb,2\r")
   }
 
 }

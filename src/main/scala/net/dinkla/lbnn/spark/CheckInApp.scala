@@ -25,7 +25,7 @@ class CheckInApp(val props: Parameters) extends App {
   import CheckInApp.log
 
   val workDir = props.get("workDir")
-
+  val resultsDir = props.get("resultsDir")
   val testRun = props.getOrDefault("testRun", "false")
   def testData = if (testRun == "true") srcSmallSample else srcFile
 
@@ -124,29 +124,16 @@ class CheckInApp(val props: Parameters) extends App {
     csv.add("minimal datetime", minDate)
     csv.add("minimal datetime", maxDate)
     utils.write(srcReportStatsGlobal, csv.toString())
-
-//    val crlf = "\r\n"
-//    val sb = new StringBuilder()
-//    sb ++= s"key;value${crlf}"
-//    sb ++= s"number of lines;${numLines}${crlf}"
-//    sb ++= s"number of users;${numDistinctUsers}${crlf}"
-//    sb ++= s"minimal datetime;${minDate}${crlf}"
-//    sb ++= s"maximal datetime;${maxDate}${crlf}"
-//    utils.write(srcReportStatsGlobal, sb.result())
   }
 
   val srcSumsYMDpart = "hdfs://v1/tmp/srcSumsYMDpart.txt"
-  val srcSumsYMD = "hdfs://v1/tmp/srcSumsYMD.txt"
+  val srcSumsYMD = resultsDir + "/srcSumsYMD.txt"
   val srcSumsYMpart = "hdfs://v1/tmp/srcSumsYMpart.txt"
-  val srcSumsYM = "hdfs://v1/tmp/srcSumsYM.txt"
+  val srcSumsYM = resultsDir + "/srcSumsYM.txt"
   val srcSumsYpart = "hdfs://v1/tmp/srcSumsYpart.txt"
-  val srcSumsY = "hdfs://v1/tmp/srcSumsY.txt"
+  val srcSumsY = resultsDir + "/srcSumsY.txt"
   val srcSumsHHpart = "hdfs://v1/tmp/srcSumsHHpart.txt"
-  val srcSumsHH = "hdfs://v1/tmp/srcSumsHH.txt"
-  val srcSumsUserPart = "hdfs://v1/tmp/srcSumsUserPart.txt"
-  val srcSumsUser = "hdfs://v1/tmp/srcSumsUser.txt"
-  val srcSumsGeoPart = "hdfs://v1/tmp/srcSumsGeoPart.txt"
-  val srcSumsGeo = "hdfs://v1/tmp/srcSumsGeo.txt"
+  val srcSumsHH = resultsDir + "/srcSumsHH.txt"
 
   def statsTime(src: String): Unit = {
 
@@ -156,26 +143,38 @@ class CheckInApp(val props: Parameters) extends App {
 
     sums.persist()
 
+    // create a text representation
+    def mkCSV[K, V](header: List[String], rdd: RDD[(K, V)]): String = {
+      val csv = new CSV(header: _*)
+      rdd.collect().foreach { x => csv.add(x._1, x._2) }
+      csv.toString
+    }
+
     val sumsYMD = sums.filter { x => x._1.size == 8 }.sortByKey(true)
-    utils.deldir(srcSumsYMDpart)
+    utils.delete(srcSumsYMDpart, srcSumsYMD)
     sumsYMD.saveAsTextFile(srcSumsYMDpart)
-//    utils.merge(srcSumsYMDpart, srcSumsYMD)
+    utils.write(srcSumsYMD, mkCSV(List("yyyymmdd", "value"), sumsYMD))
 
     val sumsYM = sums.filter { x => x._1.size == 6 }.sortByKey(true)
-    utils.deldir(srcSumsYMpart)
+    utils.delete(srcSumsYMpart, srcSumsYM)
     sumsYM.saveAsTextFile(srcSumsYMpart)
-//    utils.merge(srcSumsYMpart, srcSumsYM)
+    utils.write(srcSumsYM, mkCSV(List("yyyymm", "value"), sumsYM))
 
     val sumsY = sums.filter { x => x._1.size == 4 }.sortByKey(true)
-    utils.deldir(srcSumsYpart)
+    utils.delete(srcSumsYpart, srcSumsY)
     sumsY.saveAsTextFile(srcSumsYpart)
-//    utils.merge(srcSumsYpart, srcSumsY)
+    utils.write(srcSumsY, mkCSV(List("yyyy", "value"), sumsY))
 
     val sumsHH = sums.filter { x => x._1.size == 2 }.sortByKey(true)
-    utils.deldir(srcSumsHHpart)
+    utils.delete(srcSumsHHpart, srcSumsHH)
     sumsHH.saveAsTextFile(srcSumsHHpart)
-//    utils.merge(srcSumsHHpart, srcSumsHH)
+    utils.write(srcSumsHH, mkCSV(List("hh", "value"), sumsHH))
   }
+
+  val srcSumsUserPart = "hdfs://v1/tmp/srcSumsUserPart.txt"
+  val srcSumsUser = "hdfs://v1/tmp/srcSumsUser.txt"
+  val srcSumsGeoPart = "hdfs://v1/tmp/srcSumsGeoPart.txt"
+  val srcSumsGeo = "hdfs://v1/tmp/srcSumsGeo.txt"
 
   def statsUser(src: String): Unit = {
     val input: RDD[CheckIn] = sc.objectFile(src, 1)
