@@ -2,7 +2,7 @@ package net.dinkla.lbnn.spark
 
 import net.dinkla.lbnn.geom.{Rectangle, Point2}
 import net.dinkla.lbnn.kd.KdTree
-import net.dinkla.lbnn.utils.{Parameters, TextDate, Utilities}
+import net.dinkla.lbnn.utils.{CSV, Parameters, TextDate, Utilities}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
@@ -118,13 +118,21 @@ class CheckInApp(val props: Parameters) extends App {
     val maxDate = allDates.max()
 
     // report
-    val sb = new StringBuilder()
-    sb ++= s"key;value"
-    sb ++= s"number of lines;${numLines}"
-    sb ++= s"number of users;${numDistinctUsers}"
-    sb ++= s"minimal date;${minDate}"
-    sb ++= s"maximal date;${maxDate}"
-    utils.write(srcReportStatsGlobal, sb.result())
+    val csv = new CSV("key", "value")
+    csv.add("number of lines", numLines)
+    csv.add("number of users", numDistinctUsers)
+    csv.add("minimal datetime", minDate)
+    csv.add("minimal datetime", maxDate)
+    utils.write(srcReportStatsGlobal, csv.toString())
+
+//    val crlf = "\r\n"
+//    val sb = new StringBuilder()
+//    sb ++= s"key;value${crlf}"
+//    sb ++= s"number of lines;${numLines}${crlf}"
+//    sb ++= s"number of users;${numDistinctUsers}${crlf}"
+//    sb ++= s"minimal datetime;${minDate}${crlf}"
+//    sb ++= s"maximal datetime;${maxDate}${crlf}"
+//    utils.write(srcReportStatsGlobal, sb.result())
   }
 
   val srcSumsYMDpart = "hdfs://v1/tmp/srcSumsYMDpart.txt"
