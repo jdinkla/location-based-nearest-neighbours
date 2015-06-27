@@ -6,6 +6,7 @@ import net.dinkla.lbnn.utils.{CSV, Parameters, TextDate, Utilities}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
+// TODO better name than xs
 object xs extends Serializable {
 
   def createTimePairs(dt: TextDate): List[(String, Int)] = {
@@ -27,13 +28,13 @@ class CheckInApp(val props: Parameters) extends App {
   val workDir = props.get("workDir")
   val resultsDir = props.get("resultsDir")
   val testRun = props.getOrDefault("testRun", "false")
-  def testData = if (testRun == "true") srcSmallSample else srcFile
+  def testData = if (testRun == "true") fileCheckinsSample else fileCheckins
 
   val url = props.get("url")
-  val srcFile = props.get("srcFile")
-  val srcSmallSample = props.get("srcSmallSample")
-  val srcSortedByUser = props.get("srcSortedByUser")
-  val srcSortedByTime = props.get("srcSortedByTime")
+  val fileCheckins = props.get("fileCheckins")
+  val fileCheckinsSample = props.get("fileCheckinsSample")
+  val fileSortedByUser = props.get("fileSortedByUser")
+  val fileSortedByTime = props.get("fileSortedByTime")
   val tmpOutputDir = props.get("tmpOutputDir")
 
   var sc: SparkContext = null
@@ -102,7 +103,7 @@ class CheckInApp(val props: Parameters) extends App {
     sortedTime.saveAsObjectFile(destTime)
   }
 
-  val srcReportStatsGlobal = "hdfs://v1/tmp/report_global_stats.csv"
+  val fileStatsGlobal = resultsDir + "/" + props.getOrDefault("fileStatsGlobal", "stats_global.csv")
 
   def statsGlobal(src: String): Unit = {
     val input: RDD[CheckIn] = sc.objectFile(src)
@@ -123,24 +124,25 @@ class CheckInApp(val props: Parameters) extends App {
     csv.add("number of users", numDistinctUsers)
     csv.add("minimal datetime", minDate)
     csv.add("minimal datetime", maxDate)
-    utils.write(srcReportStatsGlobal, csv.toString())
+    utils.write(fileStatsGlobal, csv.toString())
   }
 
-  val srcSumsYMDpart = "hdfs://v1/tmp/srcSumsYMDpart.txt"
-  val srcSumsYMD = resultsDir + "/srcSumsYMD.txt"
-  val srcSumsYMpart = "hdfs://v1/tmp/srcSumsYMpart.txt"
-  val srcSumsYM = resultsDir + "/srcSumsYM.txt"
-  val srcSumsYpart = "hdfs://v1/tmp/srcSumsYpart.txt"
-  val srcSumsY = resultsDir + "/srcSumsY.txt"
-  val srcSumsHHpart = "hdfs://v1/tmp/srcSumsHHpart.txt"
-  val srcSumsHH = resultsDir + "/srcSumsHH.txt"
+//  val srcSumsYMDpart = workDir + "/srcSumsYMDpart.txt"
+//  val srcSumsYMpart = workDir + "/srcSumsYMpart.txt"
+//  val srcSumsYpart = workDir + "/srcSumsYpart.txt"
+//  val srcSumsHHpart = workDir + "/srcSumsHHpart.txt"
+  
+  val fileSumsYMD = resultsDir + "/" + props.getOrDefault("fileSumsYMD", "sums_yyyymmdd.csv")
+  val fileSumsYM = resultsDir + "/" + props.getOrDefault("fileSumsYM", "sums_yyyymm.csv")
+  val fileSumsY = resultsDir + "/" + props.getOrDefault("fileSumsY", "sums_yyyy.csv")
+  val fileSumsHH = resultsDir + "/" + props.getOrDefault("fileSumsHH", "sums_hh.csv")
 
   def statsTime(src: String): Unit = {
+    utils.mkdir(resultsDir)
 
     val input: RDD[CheckIn] = sc.objectFile(src)
     val pairs: RDD[(String, Int)] = input.flatMap { x => xs.createTimePairs(x.date) }
     val sums: RDD[(String, Int)] = pairs.reduceByKey( _ + _ )
-
     sums.persist()
 
     // create a text representation
@@ -151,30 +153,30 @@ class CheckInApp(val props: Parameters) extends App {
     }
 
     val sumsYMD = sums.filter { x => x._1.size == 8 }.sortByKey(true)
-    utils.delete(srcSumsYMDpart, srcSumsYMD)
-    sumsYMD.saveAsTextFile(srcSumsYMDpart)
-    utils.write(srcSumsYMD, mkCSV(List("yyyymmdd", "value"), sumsYMD))
+//    utils.delete(srcSumsYMDpart, fileSumsYMD)
+//    sumsYMD.saveAsTextFile(srcSumsYMDpart)
+    utils.write(fileSumsYMD, mkCSV(List("yyyymmdd", "value"), sumsYMD))
 
     val sumsYM = sums.filter { x => x._1.size == 6 }.sortByKey(true)
-    utils.delete(srcSumsYMpart, srcSumsYM)
-    sumsYM.saveAsTextFile(srcSumsYMpart)
-    utils.write(srcSumsYM, mkCSV(List("yyyymm", "value"), sumsYM))
+//    utils.delete(srcSumsYMpart, fileSumsYM)
+//    sumsYM.saveAsTextFile(srcSumsYMpart)
+    utils.write(fileSumsYM, mkCSV(List("yyyymm", "value"), sumsYM))
 
     val sumsY = sums.filter { x => x._1.size == 4 }.sortByKey(true)
-    utils.delete(srcSumsYpart, srcSumsY)
-    sumsY.saveAsTextFile(srcSumsYpart)
-    utils.write(srcSumsY, mkCSV(List("yyyy", "value"), sumsY))
+//    utils.delete(srcSumsYpart, fileSumsY)
+//    sumsY.saveAsTextFile(srcSumsYpart)
+    utils.write(fileSumsY, mkCSV(List("yyyy", "value"), sumsY))
 
     val sumsHH = sums.filter { x => x._1.size == 2 }.sortByKey(true)
-    utils.delete(srcSumsHHpart, srcSumsHH)
-    sumsHH.saveAsTextFile(srcSumsHHpart)
-    utils.write(srcSumsHH, mkCSV(List("hh", "value"), sumsHH))
+//    utils.delete(srcSumsHHpart, fileSumsHH)
+//    sumsHH.saveAsTextFile(srcSumsHHpart)
+    utils.write(fileSumsHH, mkCSV(List("hh", "value"), sumsHH))
   }
 
-  val srcSumsUserPart = "hdfs://v1/tmp/srcSumsUserPart.txt"
-  val srcSumsUser = "hdfs://v1/tmp/srcSumsUser.txt"
-  val srcSumsGeoPart = "hdfs://v1/tmp/srcSumsGeoPart.txt"
-  val srcSumsGeo = "hdfs://v1/tmp/srcSumsGeo.txt"
+  val srcSumsUserPart = workDir + "/srcSumsUserPart.txt"
+  val srcSumsUser = resultsDir + "/srcSumsUser.txt"
+  val srcSumsGeoPart = workDir + "/srcSumsGeoPart.txt"
+  val srcSumsGeo = resultsDir + "/srcSumsGeo.txt"
 
   def statsUser(src: String): Unit = {
     val input: RDD[CheckIn] = sc.objectFile(src, 1)
@@ -245,45 +247,45 @@ class CheckInApp(val props: Parameters) extends App {
       }
       case CreateSample(n) => {
         //require(utils.exists(srcFile)) // precondition downloaded
-        createSample(srcFile, srcSmallSample, n)
+        createSample(fileCheckins, fileCheckinsSample, n)
       }
       case SortByUser() => {
-        require(utils.exists(srcFile)) // precondition downloaded
-        utils.deldir(srcSortedByUser)
-        sortByUser(srcFile, srcSortedByUser)
+        require(utils.exists(fileCheckins)) // precondition downloaded
+        utils.deldir(fileSortedByUser)
+        sortByUser(fileCheckins, fileSortedByUser)
       }
       case SortByTime() => {
-        require(utils.exists(srcSortedByUser)) // precondition srcSorted
-        utils.deldir(srcSortedByTime)
-        sortByTime(srcFile, srcSortedByTime)
+        require(utils.exists(fileSortedByUser)) // precondition srcSorted
+        utils.deldir(fileSortedByTime)
+        sortByTime(fileCheckins, fileSortedByTime)
       }
       case Sort() => {
-        require(utils.exists(srcFile)) // precondition downloaded
-        utils.deldir(srcSortedByTime)
-        utils.deldir(srcSortedByUser)
-        sorted(srcFile, srcSortedByUser, srcSortedByTime)
+        require(utils.exists(fileCheckins)) // precondition downloaded
+        utils.deldir(fileSortedByTime)
+        utils.deldir(fileSortedByUser)
+        sorted(fileCheckins, fileSortedByUser, fileSortedByTime)
       }
       case StatsGlobal() => {
-        require(utils.exists(srcSortedByUser)) // precondition srcSorted
-        statsGlobal(srcSortedByUser)
+        require(utils.exists(fileSortedByUser)) // precondition srcSorted
+        statsGlobal(fileSortedByUser)
       }
       case StatsTime() => {
-        require(utils.exists(srcSortedByTime)) // precondition srcSorted
-        statsTime(srcSortedByTime)
+        require(utils.exists(fileSortedByTime)) // precondition srcSorted
+        statsTime(fileSortedByTime)
       }
       case StatsUser() => {
-        require(utils.exists(srcSortedByUser)) // precondition srcSorted
-        statsUser(srcSortedByUser)
+        require(utils.exists(fileSortedByUser)) // precondition srcSorted
+        statsUser(fileSortedByUser)
       }
       case StatsGeo() => {
-        require(utils.exists(srcSortedByUser)) // precondition srcSorted
-        statsGeo(srcSortedByUser)
+        require(utils.exists(fileSortedByUser)) // precondition srcSorted
+        statsGeo(fileSortedByUser)
       }
       case FindUser(id) => {
-        findUser(srcSortedByUser, id)
+        findUser(fileSortedByUser, id)
       }
       case PointInTime(dt) => {
-        val xs = findAtPointInTime(srcSortedByUser, dt)
+        val xs = findAtPointInTime(fileSortedByUser, dt)
         println(xs.take(25).mkString("\n"))
 
         val ps = xs.map { x => x.swap }.take(100).toList //collect().toList
@@ -303,7 +305,7 @@ class CheckInApp(val props: Parameters) extends App {
         }
       }
       case Tmp() => {
-        findUser(srcSortedByUser, 10971)
+        findUser(fileSortedByUser, 10971)
       }
       case TestWrite() => {
         utils.write(srcTestWrite, "This is a test.")
@@ -316,7 +318,7 @@ class CheckInApp(val props: Parameters) extends App {
 
   def parse(xs: Array[String]): Command = {
     xs match {
-      case Array("download") => new Download(url, srcFile)
+      case Array("download") => new Download(url, fileCheckins)
       case Array("download", url, dest) => new Download(url, dest)
       case Array("sample", ns) =>new CreateSample(ns.toInt)
       case Array("sort-by-user") => new SortByUser()
