@@ -20,8 +20,17 @@ class HaversineTest extends FunSuite {
     val p1 = new Point2(53.589888, 10.003097)
     val (x1, y1) = moveInKm(p1.x, p1.y, 1.0, 90)
     val (x2, y2) = moveInKm(x1, y1, 1.0, 270)
-    println(x2, y2)
+    //println(x2, y2)
     assert(Math.abs(x2 - p1.x) < 0.01)
     assert(Math.abs(y2 - p1.y) < 0.01)
+  }
+
+  test("neighborhood") {
+    val p1 = new Point2(53.589888, 10.003097)
+    val r = neighborhood(p1, 1)
+    assert(r.p.x < p1.x)
+    assert(r.p.y < p1.y)
+    assert(r.q.x > p1.x)
+    assert(r.q.y > p1.y)
   }
 }

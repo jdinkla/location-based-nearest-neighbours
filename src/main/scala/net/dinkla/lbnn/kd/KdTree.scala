@@ -50,7 +50,9 @@ sealed trait KdTree[+T] {
 /**
  * Nil
  */
-class Nil[T] extends KdTree[T] {
+class Nil[T]
+  extends KdTree[T]
+  with Serializable {
 
   val size = 0
 
@@ -70,7 +72,9 @@ object Nil extends Nil[Nothing]
  * Leaf
  * @param p
  */
-case class Leaf[T](val p: Point2, val value: T) extends KdTree[T] {
+case class Leaf[T](val p: Point2, val value: T)
+  extends KdTree[T]
+  with Serializable {
 
   val size = 1
 
@@ -100,7 +104,9 @@ case class Node[T](val dimension: Int,
                    val median: Double,
                    val ls: KdTree[T] = Nil,
                    val es: KdTree[T] = Nil,
-                   val hs: KdTree[T] = Nil) extends KdTree[T] {
+                   val hs: KdTree[T] = Nil)
+  extends KdTree[T]
+  with Serializable {
 
   def size = 1 + ls.size + es.size + hs.size
 
@@ -142,19 +148,27 @@ object KdTree {
 
   import Order.divideByMedian2
 
-  def build[T](d: Int, xs: List[(Point2, T)]): KdTree[T] =
+  def build[T](d: Int, xs: Seq[(Point2, T)]): KdTree[T] =
     xs match {
       case List() => Nil
       case List(x) => new Leaf[T](x._1, x._2)
       case _ => {
         val j: Int = (d + 1) % 2
-        val p = divideByMedian2[(Point2, T)](p => p._1.ith(d))(xs)
-        Order.checkPartitions(xs.map { _._1 }, p.map { _._1 })
-        new Node(d, p.median._1.ith(d), build(j, p.ls), build(j, p.es), build(j, p.hs))
+        val p = divideByMedian2[(Point2, T)](p => p._1.ith(d))(xs)        // divide by d-th coordinate
+        if (!p.checkSizes(xs.size)) {
+          // one partition has the same size as the input, try the next coordinate
+          val p2 = divideByMedian2[(Point2, T)](p => p._1.ith(j))(xs)     // divide by j-th coordinate
+          val j2: Int = (j + 1) % 2
+          Order.checkPartitions(xs.map { _._1 }, p2.map { _._1 })
+          return new Node(j, p.median._1.ith(j), build(j2, p2.ls), build(j2, p2.es), build(j2, p2.hs))
+        } else {
+          Order.checkPartitions(xs.map { _._1 }, p.map { _._1 })
+          return new Node(d, p.median._1.ith(d), build(j, p.ls), build(j, p.es), build(j, p.hs))
+        }
       }
     }
 
-  def fromList[T](xs: List[(Point2, T)]): KdTree[T] = {
+  def fromList[T](xs: Seq[(Point2, T)]): KdTree[T] = {
     xs match {
       case List() => Nil
       case _ => build(0, xs)

@@ -4,36 +4,9 @@ import scala.collection.mutable.ListBuffer
 
 /**
  * Created by dinkla on 20/06/15.
- */
-
-class Order {
-
-}
-
-/**
- * 
+ *
  */
 object Order {
-
-  /**
-   * Partition
-   * @param median
-   * @param ls
-   * @param es
-   * @param hs
-   * @tparam T
-   */
-  class Partition[T](val median: T,
-                     val ls: List[T],
-                     val es: List[T],
-                     val hs: List[T]) {
-
-    override def toString: String = s"($median, $ls, $es, $hs)"
-
-    def map[S](f: T => S): Partition[S]
-      = new Partition(f(median), ls map f, es map f, hs map f)
-
-  }
 
   /**
    * TODO not efficient O(n log n), possible in O(n), but difficult to implement faster
@@ -132,8 +105,9 @@ object Order {
   }
 
   def checkPartitions[T <% Ordered[T]](xs: Seq[T], p: Partition[T]): Unit = {
-    //println(s"p=${p.ls.size}, ${p.es.size}, ${p.hs.size}")
-    if (!(p.ls.size < xs.size && p.es.size < xs.size && p.hs.size < xs.size)) {
+    if (!p.checkSizes(xs.size)) {
+      println(s"### p=${p.ls.size}, ${p.es.size}, ${p.hs.size}")
+      println(s"### p=${p.ls}, ${p.es}, ${p.hs}")
       assert(p.ls.size < xs.size && p.es.size < xs.size && p.hs.size < xs.size)
     }
   }

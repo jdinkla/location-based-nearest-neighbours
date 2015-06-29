@@ -67,9 +67,9 @@ object Haversine {
   def neighborhood(p: Point2, size: Double): Rectangle = {
     val s2 = size / 2.0
     val (a, b) = moveInKm(p.x, p.y, s2, 270.0)        // 1/2 west
-    val (c, d) = moveInKm(p.x, p.y, s2, 180.0)        // 1/2 south: lower left
-    val (e, f) = moveInKm(p.x, p.y, size, 90.0)       // 1 east
-    val (g, h) = moveInKm(p.x, p.y, size, 0.0)        // 1 north:   upper right
+    val (c, d) = moveInKm(a, b, s2, 180.0)        // 1/2 south: lower left
+    val (e, f) = moveInKm(c, d, size, 90.0)       // 1 east
+    val (g, h) = moveInKm(e, f, size, 0.0)        // 1 north:   upper right
     new Rectangle(Point2(c, d), Point2(g, h))
   }
 

@@ -8,7 +8,9 @@ package net.dinkla.lbnn.geom
  * @param p
  * @param q
  */
-class Rectangle(val p: Point2, val q: Point2) extends Range {
+class Rectangle(val p: Point2, val q: Point2)
+  extends Range
+  with Serializable {
 
   require(p.x < q.x)
   require(p.y < q.y)

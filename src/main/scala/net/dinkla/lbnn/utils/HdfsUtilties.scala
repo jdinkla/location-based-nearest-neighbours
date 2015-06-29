@@ -51,7 +51,7 @@ class HdfsUtilties(val hc: Configuration) extends Utilities {
   def write(path: String, contents: String): Unit = {
     val fs = FileSystem.get(new URI(path), hc)
     val out = fs.create(new Path(path), true)
-    out.writeChars(contents)
+    out.writeBytes(contents)
     out.close()
   }
 

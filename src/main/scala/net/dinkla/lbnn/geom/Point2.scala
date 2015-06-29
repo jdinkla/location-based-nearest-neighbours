@@ -13,18 +13,18 @@ object Point2 {
   //implicit def intToPoint2(v: Int) = Point2(v)
   implicit def doubleToPoint2(v: Double) = new Point2Temporary(v)
 
+  lazy val origin = new Point2(0, 0)
+
 }
 
 class Point2(val x: Double, val y: Double)
   extends Point[Double]
-  with Ordered[Point2] {
+  with Ordered[Point2]
+  with Serializable {
 
   val dimension = 2
 
   def ith(i: Int) = if (i==0) x else y
-
-//  type P = Point2[T]
-  lazy val origin = new Point2(0, 0)
 
   def _1 = x
   def _2 = y

@@ -18,3 +18,5 @@ case class Tmp() extends Command
 case class FindUser(val name: Int) extends Command
 case class PointInTime(val dt: String) extends Command
 case class TestWrite() extends Command
+case class NumberOfNeighbors(val dt: String, val windowSizeInKm: Double) extends Command
+
