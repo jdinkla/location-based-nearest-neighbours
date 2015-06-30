@@ -18,6 +18,10 @@ object Haversine {
 
   private def rad2deg(rad: Double): Double = rad/pi180
 
+  private val kmPerDegree: Double = 111.2
+
+  private def degrees(km: Double): Double = km / kmPerDegree
+
   /**
    * converted from http://stackoverflow.com/questions/27928/how-do-i-calculate-distance-between-two-latitude-longitude-points
    * @param lat1
@@ -33,10 +37,6 @@ object Haversine {
     val c = 2.0 * atan2(sqrt(a), sqrt(1-a))
     R * c                                      // Distance in km
   }
-
-  private val kmPerDegree: Double = 111.2
-
-  private def degrees(km: Double): Double = km / kmPerDegree
 
   /**
    *

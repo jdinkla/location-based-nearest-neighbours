@@ -22,23 +22,23 @@ class CheckInApp(val props: Parameters) extends App {
 
   import ETLFunctions._
 
-  val workDir = props.get("workDir")
-  val resultsDir = props.get("resultsDir")
+  def getPath(dir: String, key: String, default: String)
+    = ETLFunctions.getPath(props, dir, key, default)
+
+  val workDir = props.get("work.dir")
+  val resultsDir = props.get("results.dir")
 
   val url = props.get("url")
-  val fileCheckins = props.get("fileCheckins")
-  val fileCheckinsSample = props.get("fileCheckinsSample")
-  val fileSortedByUser = props.get("fileSortedByUser")
-  val fileSortedByTime = props.get("fileSortedByTime")
+  val fileCheckins = getPath(workDir, "work.checkins", "inputdata.txt.gz")
+  val fileCheckinsSample = getPath(workDir, "work.checkinsSample", "inputdata_sample.txt.gz")
+  val fileSortedByUser = getPath(workDir, "work.sortedByUser", "temp-sorted-by-user")
+  val fileSortedByTime = getPath(workDir, "work.sortedByTime", "temp-sorted-by-time")
   val testRun = props.getOrDefault("testRun", "false")
   def testData = if (testRun == "true") fileCheckinsSample else fileCheckins
 
   // as a var, because of later initialization
   var sc: SparkContext = null
   var utils: Utilities = null
-
-  def getPath(dir: String, key: String, default: String)
-    = ETLFunctions.getPath(props, dir, key, default)
 
   /**
    * creates a 'sample' of ca num lines. Not exactly num lines
@@ -145,10 +145,10 @@ class CheckInApp(val props: Parameters) extends App {
   def statsTime(src: String): Unit = {
 
     // declare output file names
-    val fileSumsYMD = getPath(resultsDir, "fileSumsYMD", "sums_yyyymmdd.csv")
-    val fileSumsYM = getPath(resultsDir, "fileSumsYM", "sums_yyyymm.csv")
-    val fileSumsY = getPath(resultsDir, "fileSumsY", "sums_yyyy.csv")
-    val fileSumsHH = getPath(resultsDir, "fileSumsHH", "sums_hh.csv")
+    val fileSumsYMD = getPath(resultsDir, "results.sumsYMD", "sums_yyyymmdd.csv")
+    val fileSumsYM = getPath(resultsDir, "results.sumsYM", "sums_yyyymm.csv")
+    val fileSumsY = getPath(resultsDir, "results.sumsY", "sums_yyyy.csv")
+    val fileSumsHH = getPath(resultsDir, "results.sumsHH", "sums_hh.csv")
 
     // transform to pairs of YYYYMMDD, YYYYMM, YYYY and HH
     val input: RDD[CheckIn] = sc.objectFile(src)
@@ -307,21 +307,21 @@ class CheckInApp(val props: Parameters) extends App {
         require(utils.exists(fileSortedByTime))             // precondition sorted
         require(utils.exists(fileSortedByUser))             // precondition sorted
         // Global
-        val fileStatsGlobal = getPath(resultsDir, "fileStatsGlobal", "stats_global.csv")
+        val fileStatsGlobal = getPath(resultsDir, "results.statsGlobal", "stats_global.csv")
         statsGlobal(fileSortedByUser, fileStatsGlobal)
         // Time
         statsTime(fileSortedByTime)
         // User
-        val fileSumsUser = getPath(resultsDir, "fileSumsUser", "sums_user_top100.csv")
+        val fileSumsUser = getPath(resultsDir, "results.sumsUser", "sums_user_top100.csv")
         statsUser(fileSortedByUser, fileSumsUser)
         // Geo
-        val fileSumsGeo = getPath(resultsDir, "fileSumsLocation", "sums_location.csv")
+        val fileSumsGeo = getPath(resultsDir, "results.sumsLocation", "sums_location.csv")
         statsGeo(fileSortedByUser, fileSumsGeo)
       }
       case StatsGlobal() => {
         utils.mkdir(resultsDir)
         require(utils.exists(fileSortedByUser)) // precondition srcSorted
-        val fileStatsGlobal = getPath(resultsDir, "fileStatsGlobal", "stats_global.csv")
+        val fileStatsGlobal = getPath(resultsDir, "results.statsGlobal", "stats_global.csv")
         statsGlobal(fileSortedByUser, fileStatsGlobal)
       }
       case StatsTime() => {
@@ -332,13 +332,13 @@ class CheckInApp(val props: Parameters) extends App {
       case StatsUser() => {
         require(utils.exists(fileSortedByUser)) // precondition srcSorted
         utils.mkdir(resultsDir)
-        val fileSumsUser = getPath(resultsDir, "fileSumsUser", "sums_user_top100.csv")
+        val fileSumsUser = getPath(resultsDir, "results.sumsUser", "sums_user_top100.csv")
         statsUser(fileSortedByUser, fileSumsUser)
       }
       case StatsGeo() => {
         require(utils.exists(fileSortedByUser)) // precondition srcSorted
         utils.mkdir(resultsDir)
-        val fileSumsGeo = getPath(resultsDir, "fileSumsLocation", "sums_location.csv")
+        val fileSumsGeo = getPath(resultsDir, "results.sumsLocation", "sums_location.csv")
         statsGeo(fileSortedByUser, fileSumsGeo)
       }
       case NumberOfNeighbors(dt, km) => {
@@ -363,11 +363,11 @@ class CheckInApp(val props: Parameters) extends App {
       }
       case TestWrite() => {
         // for testing write access
-        val fileTestWrite = getPath(workDir, "fileTestWrite", "testwrite.txt")
+        val fileTestWrite = getPath(workDir, "results.testWrite", "testwrite.txt")
         utils.write(fileTestWrite, "This is a test.")
       }
       case _ => {
-        println(s"Unknown command $cmd")
+        log.error(s"Unknown command $cmd")
       }
     }
   }
@@ -381,7 +381,7 @@ class CheckInApp(val props: Parameters) extends App {
       case Array("sort-by-time") => new SortByTime()
       case Array("statistics") => new Statistics()
       case Array("neighbors", dt, km) => new NumberOfNeighbors(dt, km.toDouble)
-      // for developers
+      // for "developers"
       case Array("download", url, dest) => new Download(url, dest)
       case Array("sample", ns) =>new CreateSample(ns.toInt)
       case Array("stats-global") => new StatsGlobal()
@@ -392,7 +392,10 @@ class CheckInApp(val props: Parameters) extends App {
       case Array("find", ns) => new FindUser(ns.toInt)
       case Array("pit", dt) => new PointInTime(dt)
       case Array("testwrite") => new TestWrite()
-      case _ => NullCommand
+      case _ => {
+        log.error(s"Unknown command '${xs.toList.toString}'")
+        NullCommand
+      }
     }
   }
 

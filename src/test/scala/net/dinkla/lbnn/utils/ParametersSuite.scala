@@ -10,12 +10,12 @@ class ParametersSuite extends FunSuite {
   val ps = new Parameters("local.properties")
 
   test("constr & get") {
-    assert(ps.get("workDir") == "temp")
+    assert(ps.get("spark.appname") == "net.dinkla.lbnn")
   }
 
   test("constr & getOrDefault") {
-    assert(ps.getOrDefault("workDir", "xyz") == "temp")
-    assert(ps.getOrDefault("WorkDir", "xyz") == "xyz")
+    assert(ps.getOrDefault("spark.appname", "xyz") == "net.dinkla.lbnn")
+    assert(ps.getOrDefault("supark.appuname", "xyz") == "xyz")
   }
 
 }

@@ -24,7 +24,7 @@ class Point2(val x: Double, val y: Double)
 
   val dimension = 2
 
-  def ith(i: Int) = if (i==0) x else y
+  def ith(i: Int) = if ((i%dimension)==0) x else y
 
   def _1 = x
   def _2 = y
@@ -43,7 +43,6 @@ class Point2(val x: Double, val y: Double)
 
   override def equals(other: Any): Boolean = {
     other match {
-      //case that: Point2[T] => (0 until dimension).forall(i => ith(i) == that.ith(i))
       case that: Point2 => x == that.x && y == that.y
       case _ => false
     }
