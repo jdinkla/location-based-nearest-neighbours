@@ -1,19 +1,16 @@
 package net.dinkla.lbnn.kd
 
-import net.dinkla.lbnn
 import net.dinkla.lbnn.geom.{Point2, Range}
 import net.dinkla.lbnn.utils.Order
 
 import scala.collection.mutable.ListBuffer
 
 /**
- * Created by dinkla on 19/06/15.
- */
-
-/**
  * A k-dimensional tree.
  *
  * See for example ...
+ *
+ * Created by dinkla on 19/06/15.
  */
 sealed trait KdTree[+T] {
 

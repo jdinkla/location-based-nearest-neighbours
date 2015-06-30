@@ -58,6 +58,35 @@ class CheckInApp(val props: Parameters) extends App {
   }
 
   /**
+   * Sort by user id.
+   *
+   * @param src
+   * @param dest
+   * @return
+   */
+  def sortByUser(src: String, dest: String) = {
+    val input: RDD[String] = sc.textFile(src)
+    val tokenized = input.map(CheckIn.split)
+    val parsed = tokenized.map(CheckIn.parse)
+    val sorted = parsed.sortBy(c => c, true)
+    sorted.saveAsObjectFile(dest)
+  }
+
+  /**
+   * Sort by time.
+   *
+   * @param src
+   * @param dest
+   */
+  def sortByTime(src: String, dest: String) = {
+    val input: RDD[String] = sc.textFile(src)
+    val tokenized = input.map(CheckIn.split)
+    val parsed = tokenized.map(CheckIn.parse)
+    val sorted = parsed.sortBy(c => c.date, true)
+    sorted.saveAsObjectFile(dest)
+  }
+
+  /**
    * Sort by user id and save, sort by time and save.
    *
    * @param src
@@ -257,6 +286,16 @@ class CheckInApp(val props: Parameters) extends App {
         require(utils.exists(fileCheckins))                 // precondition downloaded
         createSample(fileCheckins, fileCheckinsSample, n)
       }
+      case SortByUser() => {
+        require(utils.exists(fileCheckins)) // precondition downloaded
+        utils.deldir(fileSortedByUser)
+        sortByUser(fileCheckins, fileSortedByUser)
+      }
+      case SortByTime() => {
+        require(utils.exists(fileSortedByUser)) // precondition srcSorted
+        utils.deldir(fileSortedByTime)
+        sortByTime(fileCheckins, fileSortedByTime)
+      }
       case Sort() => {
         require(utils.exists(fileCheckins))                 // preecondition downloaded
         utils.deldir(fileSortedByTime)
@@ -335,19 +374,24 @@ class CheckInApp(val props: Parameters) extends App {
 
   def parse(xs: Array[String]): Command = {
     xs match {
+      // for "users"
       case Array("download") => new Download(url, fileCheckins)
+      case Array("sort") => new Sort()
+      case Array("sort-by-user") => new SortByUser()
+      case Array("sort-by-time") => new SortByTime()
+      case Array("statistics") => new Statistics()
+      case Array("neighbors", dt, km) => new NumberOfNeighbors(dt, km.toDouble)
+      // for developers
       case Array("download", url, dest) => new Download(url, dest)
       case Array("sample", ns) =>new CreateSample(ns.toInt)
-      case Array("sort") => new Sort()
-      case Array("global") => new StatsGlobal()
-      case Array("time") => new StatsTime()
-      case Array("user") => new StatsUser()
-      case Array("geo") => new StatsGeo()
+      case Array("stats-global") => new StatsGlobal()
+      case Array("stats-time") => new StatsTime()
+      case Array("stats-user") => new StatsUser()
+      case Array("stats-geo") => new StatsGeo()
       case Array("tmp") => new Tmp()
       case Array("find", ns) => new FindUser(ns.toInt)
       case Array("pit", dt) => new PointInTime(dt)
       case Array("testwrite") => new TestWrite()
-      case Array("neighbors", dt, km) => new NumberOfNeighbors(dt, km.toDouble)
       case _ => NullCommand
     }
   }

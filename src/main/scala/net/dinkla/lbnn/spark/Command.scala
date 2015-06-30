@@ -7,6 +7,8 @@ abstract sealed class Command
 object NullCommand extends Command
 case class Download(val url: String, val dest: String) extends Command
 case class CreateSample(val num: Int) extends Command
+case class SortByUser() extends Command
+case class SortByTime() extends Command
 case class Sort() extends Command
 case class Statistics() extends Command
 case class StatsGlobal() extends Command

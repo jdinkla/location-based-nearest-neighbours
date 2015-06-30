@@ -28,6 +28,36 @@ Tools needed:
 * Scala, SBT
 * If you edit the SBT you can use the standalone version of Spark, so a Spark cluster is not needed
 
+How to use
+----------
+
+Checkout the source
+
+```
+git clone https://github.com/jdinkla/location-based-nearest-neighbours.git
+```
+
+Change into the directory
+
+```
+cd location-based-nearest-neighbours
+```
+
+Create an assembly
+
+```
+$ sbt assembly
+```
+
+Download the example data, prepare the data and find the neighbors for the 6th of october 2009 within a 5 km range for
+every user.
+
+```
+$ scripts/submit.sh download
+$ scripts/submit.sh sort-by-user
+$ scripts/submit.sh neighbors 20091006 5
+```
+
 Current state
 -------------
 

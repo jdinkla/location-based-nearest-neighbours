@@ -4,7 +4,7 @@ import scala.collection.mutable.ListBuffer
 
 /**
  *
- * TODO non functional
+ * TODO too imperative
  *
  * Created by Dinkla on 27.06.2015.
  */
