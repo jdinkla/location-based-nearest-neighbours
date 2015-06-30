@@ -198,9 +198,9 @@ class CheckInApp(val props: Parameters) extends App {
     val sums = pairs.reduceByKey { _ + _  }
     val sorted = sums.sortBy(x => x._2, false)
 
-    // save all
-    val text = sorted.map { x => (x._1.toString(), x._2) }
-    utils.write(dest, mkCSV("location", "number of checkins", text))
+    // save all flat as x;y;value
+    val text: RDD[Seq[String]] = sorted.map { x => Array(x._1._1.toString, x._1._2.toString, x._2.toString) }
+    utils.write(dest, mkCSV(List("locationX", "locationY", "number of checkins"), text))
   }
 
   /**

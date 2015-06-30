@@ -48,6 +48,20 @@ object ETLFunctions extends Serializable {
   }
 
   /**
+   * Create a text representation of an RDD where each lines contains one or more values.
+   *
+   * @param columns   The headers.
+   * @param rdd       The rdd
+   * @tparam K        The datatype, often <code>String</code>.
+   * @return          The CSV as String.
+   */
+  def mkCSV[K](columns: List[String], rdd: RDD[Seq[K]]): String = {
+    val csv = new CSV(columns: _*)
+    rdd.collect().foreach { x => csv.add(x: _*) }
+    csv.toString
+  }
+
+  /**
    * Create a text representation of pair <code>Seq</code> consisting of two columns.
    * @param column1
    * @param column2
