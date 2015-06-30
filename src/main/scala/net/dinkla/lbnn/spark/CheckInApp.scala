@@ -3,18 +3,23 @@ package net.dinkla.lbnn.spark
 import net.dinkla.lbnn.geom.{Haversine, Rectangle, Point2}
 import net.dinkla.lbnn.kd.KdTree
 import net.dinkla.lbnn.spark.CheckIn.CustomerId
+import net.dinkla.lbnn.spark.CheckInApp._
 import net.dinkla.lbnn.utils.{CSV, Parameters, TextDate, Utilities}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
 /**
+ * An example for the analysis of location based / geometric data with k-d trees with Apache Spark and Scala.
+ *
  * Created by Dinkla on 23.06.2015.
  */
 class CheckInApp(val props: Parameters) extends App {
 
   type Command = net.dinkla.lbnn.spark.Command
 
-  import CheckInApp.log
+  import org.apache.log4j.Logger
+  val log = Logger.getLogger(getClass.getName)
+
   import ETLFunctions._
 
   val workDir = props.get("workDir")
@@ -25,7 +30,6 @@ class CheckInApp(val props: Parameters) extends App {
   val fileCheckinsSample = props.get("fileCheckinsSample")
   val fileSortedByUser = props.get("fileSortedByUser")
   val fileSortedByTime = props.get("fileSortedByTime")
-
   val testRun = props.getOrDefault("testRun", "false")
   def testData = if (testRun == "true") fileCheckinsSample else fileCheckins
 
@@ -54,43 +58,14 @@ class CheckInApp(val props: Parameters) extends App {
   }
 
   /**
-   * Sort by user id.
-   *
-   * @param src
-   * @param dest
-   * @return
-   */
-  def sortByUser(src: String, dest: String) = {
-    val input: RDD[String] = sc.textFile(src)
-    val tokenized = input.map(CheckIn.split)
-    val parsed = tokenized.map(CheckIn.parse)
-    val sorted = parsed.sortBy(c => c, true)
-    sorted.saveAsObjectFile(dest)
-  }
-
-  /**
-   * Sort by time.
-   *
-   * @param src
-   * @param dest
-   */
-  def sortByTime(src: String, dest: String) = {
-    val input: RDD[String] = sc.textFile(src)
-    val tokenized = input.map(CheckIn.split)
-    val parsed = tokenized.map(CheckIn.parse)
-    val sorted = parsed.sortBy(c => c.date, true)
-    sorted.saveAsObjectFile(dest)
-  }
-
-  /**
    * Sort by user id and save, sort by time and save.
    *
    * @param src
    * @param destUser
    * @param destTime
    */
-  def sorted(src: String, destUser: String, destTime: String) = {
-    log.info(s"### SORTED $src $destUser $destTime")
+  def sort(src: String, destUser: String, destTime: String) = {
+    log.info(s"### sort($src,$destUser,$destTime)")
     val input: RDD[String] = sc.textFile(src)
     val tokenized = input.map(CheckIn.split)
     val parsed = tokenized.map(CheckIn.parse)
@@ -231,31 +206,6 @@ class CheckInApp(val props: Parameters) extends App {
 
   /**
    *
-   * @param src
-   * @param now
-   * @return
-   */
-  def findAtPointInTime(src: String, now: String): RDD[(CheckIn.CustomerId, Point2)] = {
-    type Pair = (Int, CheckIn)
-
-    val pit = new TextDate(now)
-    val input: RDD[CheckIn] = sc.objectFile(src, 1)
-
-    val filtered = input.filter { x => x.date.compareTo(pit) <= 0 }       // ignore the data newer than 'now'
-    // debugFilterPrint[CheckIn](p => p.id == 10971)(filtered)
-
-    val pairs: RDD[Pair] = filtered.map { x => (x.id, x)}                 // pair
-
-    val red = pairs.reduceByKey( (c, d) => if (c.date.compareTo(d.date) < 0) d else c )
-    // debugFilterPrint[Pair](p => p._1 == 10971)(red)
-
-    val xs = red.map { p => (p._1, new Point2(p._2.locX, p._2.locY)) }
-    println(s"### num xs: ${xs.count()}")
-    xs
-  }
-
-  /**
-   *
    * @param dest
    * @param dt
    * @param windowSizeInKm
@@ -300,33 +250,39 @@ class CheckInApp(val props: Parameters) extends App {
     cmd match {
       case Download(url, dest) => {
         utils.mkdir(workDir)
-        require(!utils.exists(dest)) // precondition not downloaded
+        require(!utils.exists(dest))                        // precondition not downloaded
         utils.download(url, dest)
       }
       case CreateSample(n) => {
-        //require(utils.exists(srcFile)) // precondition downloaded
+        require(utils.exists(fileCheckins))                 // precondition downloaded
         createSample(fileCheckins, fileCheckinsSample, n)
       }
-      case SortByUser() => {
-        require(utils.exists(fileCheckins)) // precondition downloaded
-        utils.deldir(fileSortedByUser)
-        sortByUser(fileCheckins, fileSortedByUser)
-      }
-      case SortByTime() => {
-        require(utils.exists(fileSortedByUser)) // precondition srcSorted
-        utils.deldir(fileSortedByTime)
-        sortByTime(fileCheckins, fileSortedByTime)
-      }
       case Sort() => {
-        require(utils.exists(fileCheckins)) // precondition downloaded
+        require(utils.exists(fileCheckins))                 // preecondition downloaded
         utils.deldir(fileSortedByTime)
         utils.deldir(fileSortedByUser)
-        sorted(fileCheckins, fileSortedByUser, fileSortedByTime)
+        sort(fileCheckins, fileSortedByUser, fileSortedByTime)
+      }
+      case Statistics() => {
+        utils.mkdir(resultsDir)
+        require(utils.exists(fileSortedByTime))             // precondition sorted
+        require(utils.exists(fileSortedByUser))             // precondition sorted
+        // Global
+        val fileStatsGlobal = getPath(resultsDir, "fileStatsGlobal", "stats_global.csv")
+        statsGlobal(fileSortedByUser, fileStatsGlobal)
+        // Time
+        statsTime(fileSortedByTime)
+        // User
+        val fileSumsUser = getPath(resultsDir, "fileSumsUser", "sums_user_top100.csv")
+        statsUser(fileSortedByUser, fileSumsUser)
+        // Geo
+        val fileSumsGeo = getPath(resultsDir, "fileSumsLocation", "sums_location.csv")
+        statsGeo(fileSortedByUser, fileSumsGeo)
       }
       case StatsGlobal() => {
+        utils.mkdir(resultsDir)
         require(utils.exists(fileSortedByUser)) // precondition srcSorted
         val fileStatsGlobal = getPath(resultsDir, "fileStatsGlobal", "stats_global.csv")
-        utils.mkdir(resultsDir)
         statsGlobal(fileSortedByUser, fileStatsGlobal)
       }
       case StatsTime() => {
@@ -336,54 +292,15 @@ class CheckInApp(val props: Parameters) extends App {
       }
       case StatsUser() => {
         require(utils.exists(fileSortedByUser)) // precondition srcSorted
-        val fileSumsUser = getPath(resultsDir, "fileSumsUser", "sums_user_top100.csv")
         utils.mkdir(resultsDir)
+        val fileSumsUser = getPath(resultsDir, "fileSumsUser", "sums_user_top100.csv")
         statsUser(fileSortedByUser, fileSumsUser)
       }
       case StatsGeo() => {
         require(utils.exists(fileSortedByUser)) // precondition srcSorted
+        utils.mkdir(resultsDir)
         val fileSumsGeo = getPath(resultsDir, "fileSumsLocation", "sums_location.csv")
-        utils.mkdir(resultsDir)
         statsGeo(fileSortedByUser, fileSumsGeo)
-      }
-      case FindUser(id) => {
-        utils.mkdir(resultsDir)
-        findUser(fileSortedByUser, id)
-      }
-      case PointInTime(dt) => {
-        // defs
-        val fileNeighbors10 = getPath(resultsDir, "fileNeighbors10", "neighbors_10.csv")
-        val windowSizeInKm = 10
-
-        // prepare
-        utils.mkdir(resultsDir)
-        utils.deldir(fileNeighbors10)
-
-        // get all the latest checkins for dt
-        val rdd: RDD[CheckIn] = filterToLatest(fileSortedByUser, dt)
-        rdd.persist()
-
-        // build the KD tree
-        // pair: Point2 x CheckIn
-        val ps: RDD[(Point2, CustomerId)] = rdd.map { c => ( Point2(c.locX, c.locY), c.id ) }
-        val ps2: RDD[(Point2, Iterable[CustomerId])] = ps.groupByKey()
-        val ps3: RDD[(Point2, List[CustomerId])] = ps2.mapValues { p => p.toList }
-        val num = ps3.count()
-        log.info(s"### Building KdTree for $num nodes")
-        val ps4 = ps3.collect() // ps3.take(100)
-        val kdt: KdTree[List[CustomerId]] = KdTree.fromList(ps4)
-
-        // query for each customer in rdd
-        val ns : RDD[(CheckIn,Seq[(Point2, List[CustomerId])])] = rdd.map { c =>
-          val loc = Point2(c.locX, c.locY)
-          val rect = Haversine.neighborhood(loc, windowSizeInKm)
-          val ps: Seq[(Point2, List[CustomerId])] = kdt.rangeQuery(rect)
-          (c, ps.filter { x => x._1 != loc })     // ignore the point at loc, this is the current row
-        }
-
-        // ns.saveAsTextFile(fileNeighbors10)
-        val ns2 = ns.map { x => (x._1.id, x._2.size )}
-        ns2.saveAsTextFile(fileNeighbors10)
       }
       case NumberOfNeighbors(dt, km) => {
         // prepare
@@ -392,15 +309,21 @@ class CheckInApp(val props: Parameters) extends App {
         utils.deldir(dest)
         neighbors(dest, dt, km)
       }
+      case FindUser(id) => {
+        // for debugging
+        utils.mkdir(resultsDir)
+        findUser(fileSortedByUser, id)
+      }
+      case PointInTime(dt) => {
+        // for debugging
+        val rdd: RDD[CheckIn] = filterToLatest(fileSortedByUser, dt)
+        println("###" + rdd.collect().toString)
+      }
       case Tmp() => {
-        val rdd : RDD[CheckIn] = sc.objectFile(fileSortedByUser)
-        val locs = rdd.map { c => (Point2(c.locX, c.locY), c.id)}
-
-        val ps = locs.take(100)
-        val kdt = KdTree.fromList(ps)
-        //findUser(fileSortedByUser, 10971)
+        // for debugging and testing
       }
       case TestWrite() => {
+        // for testing write access
         val fileTestWrite = getPath(workDir, "fileTestWrite", "testwrite.txt")
         utils.write(fileTestWrite, "This is a test.")
       }
@@ -415,8 +338,6 @@ class CheckInApp(val props: Parameters) extends App {
       case Array("download") => new Download(url, fileCheckins)
       case Array("download", url, dest) => new Download(url, dest)
       case Array("sample", ns) =>new CreateSample(ns.toInt)
-      case Array("sort-by-user") => new SortByUser()
-      case Array("sort-by-time") => new SortByTime()
       case Array("sort") => new Sort()
       case Array("global") => new StatsGlobal()
       case Array("time") => new StatsTime()
@@ -438,8 +359,5 @@ class CheckInApp(val props: Parameters) extends App {
  */
 object CheckInApp {
 
-  import org.apache.log4j.Logger
-
-  val log = Logger.getLogger(getClass.getName)
 
 }
