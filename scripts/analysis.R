@@ -18,11 +18,33 @@
 # see http://blog.revolutionanalytics.com/2012/09/how-to-use-your-favorite-fonts-in-r-charts.html
 # and http://www.r-bloggers.com/change-fonts-in-ggplot2-and-create-xkcd-style-graphs/
 #
+# maps:
+# install.packages(c("maps"))
+# install.packages(c("ggmap"))
 
 setwd("C:/workspace/location-based-nearest-neighbours/temp")
 
 library(ggplot2)
 library(extrafont)
+library(ggmap)
+
+# To cite ggmap in publications, please use:
+
+#   D. Kahle and H. Wickham. ggmap: Spatial Visualization with ggplot2. The R Journal,
+#   5(1), 144-161. URL http://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
+
+# A BibTeX entry for LaTeX users is
+
+#   @Article{,
+#     author = {David Kahle and Hadley Wickham},
+#     title = {ggmap: Spatial Visualization with ggplot2},
+#     journal = {The R Journal},
+#     year = {2013},
+#     volume = {5},
+#     number = {1},
+#     pages = {144--161},
+#     url = {http://journal.r-project.org/archive/2013-1/kahle-wickham.pdf},
+#   }
 
 lbnn_init <- function() {
 #font_import()
@@ -214,7 +236,6 @@ chart_ns <- function(binwidth = 8, scale = 1) {
    	p
 }
 
-
 #
 #
 #
@@ -222,42 +243,78 @@ sums_loc <- read.csv(file="sums_location.csv", header=TRUE, sep=";")
 
 # define the charts
 
+chart_loc <- function() {
+
+	# calc percentages
+	a <- sums_loc
+	a$pct <- a$number.of.checkins/sum(a$number.of.checkins)*100
+
+	# filter data
+	a <- a[a$pct >= 0.1,]
+
+	#w <- get_map("USA", zoom=4, maptype="satellite")
+	w <- get_map("USA", zoom=4)
+	p <- ggmap(w) +
+			ggtitle("Regions with a high number of check-ins") + 
+			theme(
+				plot.title=element_text(size=size_large, color=dinkla_red, family=font_family)
+			)
+
+	p + geom_point(data=a, aes(locationY, locationX, color=pct), size=10, alpha=.9) + 
+			scale_color_gradient2(low=dinkla_dark_blue, mid=dinkla_blue, high=dinkla_red)
+}
 
 
 hide <- function() {
 
-qplot(sums_ym$yyyymm, sums_ym$value, geom="line")
-qplot(sums_ym$yyyymm, sums_ym$value, geom=c("line", "point"))
-qplot(sums_ym$yyyymm, sums_ym$value, geom="bar", stat="identity")
-ggplot(sums_ym, aes(x=yyyymm, y=value)) + geom_bar(stat="identity", fill=dinkla_blue, color="black")
+	1
+# 	states_map <- map_data("state")
+# 	ggplot(states_map, aes(x=long, y=lat, group=group)) + geom_polygon(fill="white", colour="black")
 
-qplot(sums_ymd$yyyymm, sums_ymd$value, geom="line")
-qplot(sums_ymd$yyyymm, sums_ymd$value, geom=c("line", "point"))
-ggplot(sums_ymd, aes(x=yyyymmdd, y=value)) + geom_line(color=dinkla_blue)
+# w_map <- map_data("world")
 
-hist(sums_ns1$number.of.neighbors)
-hist(sums_ns1$number.of.neighbors, breaks=25)
-qplot(sums_ns1$number.of.neighbors, binwidth=2)
+# p + geom_point(data=sums_loc, aes(locationY, locationX, color=pct), size=8, alpha=.9) + scale_color_gradient2(high=dinkla_red)
+# p <- ggplot(w_map, aes(x=long, y=lat, group=group)) + geom_polygon(fill="white", colour="black")
+# a <- sums_loc[sums_loc$pct >= 0.005,]
+# p + geom_point(data=d, aes(lat, lon))
+# p + geom_point(data=a, aes(locationY, locationX), color=dinkla_red, size=5, alpha=.9) 
 
-b <- sums_ymd
-b$type <- rep("Check-ins", length(sums_ymd$value))
-c <- sums_ymd
-c$value <- smooth(sums_ymd$value)
-c$type <- rep("Smoothed", length(c$value))
-d <- rbind(b, c)
-ggplot(d, aes(x=yyyymmdd, y=value, color=type)) + geom_line() + scale_color_manual(values=c(dinkla_blue, dinkla_red))
-ggplot(sums_ymd, aes(x=yyyymmdd, y=value)) + geom_area(fill=dinkla_blue, alpha=.3) + geom_line(color=dinkla_blue)
+# p + geom_point(data=a, aes(locationY, locationX, color=pct), size=10, alpha=.9) + scale_color_gradient2(high=dinkla_red)
 
 
-# sums_ym
-ggplot(sums_ym, aes(x=yyyymm, y=value)) + geom_bar(stat="identity", fill=dinkla_blue)
+# p + geom_point(data=d, aes(lon, lat), size=15, color="red", alpha=.5)
+#  sums_loc$pct <- sums_loc$number.of.checkins/sum(sums_loc$number.of.checkins)
 
 
+# qplot(sums_ym$yyyymm, sums_ym$value, geom="line")
+# qplot(sums_ym$yyyymm, sums_ym$value, geom=c("line", "point"))
+# qplot(sums_ym$yyyymm, sums_ym$value, geom="bar", stat="identity")
+# ggplot(sums_ym, aes(x=yyyymm, y=value)) + geom_bar(stat="identity", fill=dinkla_blue, color="black")
 
-#ggsave("font_ggplot.pdf", plot=p,  width=16, height=9)
-## needed for Windows - make sure YOU have the correct path for your machine:
-#Sys.setenv(R_GSCMD = "C:\\Program Files (x86)\\gs\\gs9.06\\bin\\gswin32c.exe")
-#embed_fonts("font_ggplot.pdf")
+# qplot(sums_ymd$yyyymm, sums_ymd$value, geom="line")
+# qplot(sums_ymd$yyyymm, sums_ymd$value, geom=c("line", "point"))
+# ggplot(sums_ymd, aes(x=yyyymmdd, y=value)) + geom_line(color=dinkla_blue)
+
+# hist(sums_ns1$number.of.neighbors)
+# hist(sums_ns1$number.of.neighbors, breaks=25)
+# qplot(sums_ns1$number.of.neighbors, binwidth=2)
+
+# b <- sums_ymd
+# b$type <- rep("Check-ins", length(sums_ymd$value))
+# c <- sums_ymd
+# c$value <- smooth(sums_ymd$value)
+# c$type <- rep("Smoothed", length(c$value))
+# d <- rbind(b, c)
+# ggplot(d, aes(x=yyyymmdd, y=value, color=type)) + geom_line() + scale_color_manual(values=c(dinkla_blue, dinkla_red))
+# ggplot(sums_ymd, aes(x=yyyymmdd, y=value)) + geom_area(fill=dinkla_blue, alpha=.3) + geom_line(color=dinkla_blue)
+
+# # sums_ym
+# ggplot(sums_ym, aes(x=yyyymm, y=value)) + geom_bar(stat="identity", fill=dinkla_blue)
+
+# #ggsave("font_ggplot.pdf", plot=p,  width=16, height=9)
+# ## needed for Windows - make sure YOU have the correct path for your machine:
+# #Sys.setenv(R_GSCMD = "C:\\Program Files (x86)\\gs\\gs9.06\\bin\\gswin32c.exe")
+# #embed_fonts("font_ggplot.pdf")
 
 }
 
