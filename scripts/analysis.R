@@ -176,11 +176,49 @@ chart_ymd <- function(scale = 1) {
 }
 
 #
+# sums_ns: Number of neighbors
 #
+# displayed in a histogram
 #
 
-sums_loc <- read.csv(file="sums_location.csv", header=TRUE, sep=";")
 sums_ns1 <- read.csv(file="num_neighbors_20091006_5.0.csv", header=TRUE, sep=";")
+
+chart_ns <- function(binwidth = 8, scale = 1) {
+
+	size_small <- 12 * scale
+	size_middle <- 16 * scale
+	size_large <- 24 * scale
+	origin <- 1 - binwidth
+
+	# filter out users with no neighbors
+	#a <- sums_ns1[sums_ns1$number.of.neighbors > 0,]
+	a <- sums_ns1
+	mx <- max(a$number.of.neighbors)
+
+	p <- ggplot(a, aes(x=number.of.neighbors)) + 
+			geom_histogram(binwidth=binwidth, origin=origin, fill=mk_color(dinkla_blue, 0.8), color=dinkla_dark_blue) +
+			scale_x_continuous(breaks=seq(0, mx, 5)) +
+			theme(
+				panel.background = element_rect(fill=mk_color(dinkla_blue, 0.1)),
+				panel.grid.major.x = element_blank(),
+    		    panel.grid.minor.x = element_blank()) + 
+			ggtitle("Number of neighbors (also checked in) in a 5km range") +
+   			xlab("Number of neighbors") + ylab("Number of users")  +
+			theme(
+			axis.title.x=element_text(size=size_middle, family=font_family, lineheight=.9, colour=dinkla_red),
+			axis.text.x=element_text(size=size_small, color=dinkla_blue, family=font_family),
+			axis.title.y=element_text(size=size_middle, family=font_family, lineheight=.9, colour=dinkla_red),
+			axis.text.y=element_text(size=size_small, color=dinkla_blue, family=font_family),
+			plot.title=element_text(size=size_large, color=dinkla_red, family=font_family)
+			)
+   	p
+}
+
+
+#
+#
+#
+sums_loc <- read.csv(file="sums_location.csv", header=TRUE, sep=";")
 
 # define the charts
 
@@ -222,23 +260,4 @@ ggplot(sums_ym, aes(x=yyyymm, y=value)) + geom_bar(stat="identity", fill=dinkla_
 #embed_fonts("font_ggplot.pdf")
 
 }
-
-
-
-# mk_blues <- function(n = 10) {
-# 	mk_palette(dinkla_blue, n, 0.05, 0.95)
-# }
-
-# # 
-# gen_chart <- function(ls, vs, mn="Main") {
-# 	cs <- rainbow(length(vs))
-# 	barplot(vs, col=cs, main=mn)
-# }
-
-# chart_y <- function() {
-# 	ls <- sums_y$yyyy
-# 	vs <- sums_y$value
-# 	cs <- rainbow(length(ls))
-# 	barplot(vs, col=cs, main="Number of check-in's per year", names.arg=ls)
-# }
 
