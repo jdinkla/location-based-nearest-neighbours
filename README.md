@@ -78,8 +78,9 @@ Current state
 -------------
 
 The current state is first proof of concept.
-The app works, but is not performance optimized, for example is partitioning of Apache Spark ignored at the moment.
+The app works, but is not performance optimized. Partitioning of Apache Spark is ignored at the moment.
 
+![Example analysis](file:///C:/workspace/net.dinkla.www3/build/web/images/lbnn/lbnn_histogram.png)
 
 Future work
 -----------
@@ -100,4 +101,5 @@ Author
 ------
 
 Written by [Jörn Dinkla](http://www.dinkla.net).
+See [my homepage for further information](http://dinkla.net/en/datascience/lbnn.html)
 
