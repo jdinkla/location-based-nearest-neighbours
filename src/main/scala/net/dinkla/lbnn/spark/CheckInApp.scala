@@ -17,8 +17,8 @@ class CheckInApp(val props: Parameters) extends App {
 
   type Command = net.dinkla.lbnn.spark.Command
 
-  import org.apache.log4j.Logger
-  val log = Logger.getLogger(getClass.getName)
+  import org.slf4j.LoggerFactory
+  val log = LoggerFactory.getLogger(getClass.getName)
 
   import ETLFunctions._
 
@@ -279,8 +279,11 @@ class CheckInApp(val props: Parameters) extends App {
     cmd match {
       case Download(url, dest) => {
         utils.mkdir(workDir)
-        require(!utils.exists(dest))                        // precondition not downloaded
-        utils.download(url, dest)
+        if (utils.exists(dest)) {                           // already downloaded: skip, don't abort
+          log.info(s"### Skipping download, file already exists: $dest (delete it to re-download)")
+        } else {
+          utils.download(url, dest)
+        }
       }
       case CreateSample(n) => {
         require(utils.exists(fileCheckins))                 // precondition downloaded

@@ -48,6 +48,9 @@ Compile / runMain := Defaults
 
 run / fork := true
 run / javaOptions ++= sparkJava17Options
+// Quiet, correctly-streamed logging for local runs (see log4j2-local.properties).
+// Kept off the classpath/assembly so it only affects `sbt run`, not cluster submits.
+run / javaOptions += s"-Dlog4j2.configurationFile=${baseDirectory.value}/log4j2-local.properties"
 
 Test / fork := true
 Test / javaOptions ++= sparkJava17Options
