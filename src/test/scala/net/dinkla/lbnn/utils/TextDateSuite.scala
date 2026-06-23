@@ -3,12 +3,12 @@ package net.dinkla.lbnn.utils
 import java.text.SimpleDateFormat
 import java.util.Date
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Created by Dinkla on 24.06.2015.
  */
-class TextDateSuite extends FunSuite {
+class TextDateSuite extends AnyFunSuite {
 
   test("constr #1") {
     val d1 = new TextDate("20010203")

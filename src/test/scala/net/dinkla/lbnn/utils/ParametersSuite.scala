@@ -1,11 +1,11 @@
 package net.dinkla.lbnn.utils
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Created by Dinkla on 23.06.2015.
  */
-class ParametersSuite extends FunSuite {
+class ParametersSuite extends AnyFunSuite {
 
   val ps = new Parameters("local.properties")
 

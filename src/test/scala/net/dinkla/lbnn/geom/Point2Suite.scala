@@ -1,11 +1,11 @@
 package net.dinkla.lbnn.geom
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Created by dinkla on 19/06/15.
  */
-class Point2Suite extends FunSuite {
+class Point2Suite extends AnyFunSuite {
 
   val p0 = Point2(0, 0)
   val p1 = Point2(10,12)

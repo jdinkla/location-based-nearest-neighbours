@@ -1,11 +1,11 @@
 package net.dinkla.lbnn.utils
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Created by Dinkla on 27.06.2015.
  */
-class CSVSuite extends FunSuite {
+class CSVSuite extends AnyFunSuite {
 
   test("toString") {
     val csv = new CSV("key", "value")

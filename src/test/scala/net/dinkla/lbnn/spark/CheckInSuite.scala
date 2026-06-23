@@ -1,12 +1,12 @@
 package net.dinkla.lbnn.spark
 
 import net.dinkla.lbnn.utils.TextDate
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Created by dinkla on 19/06/15.
  */
-class CheckInSuite extends FunSuite {
+class CheckInSuite extends AnyFunSuite {
 
   val line = "0       2010-10-12T23:58:03Z    30.261599404    -97.7585805953  15372"
   val parts = CheckIn.split(line)

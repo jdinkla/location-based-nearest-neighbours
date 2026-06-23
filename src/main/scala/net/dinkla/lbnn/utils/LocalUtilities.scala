@@ -29,7 +29,7 @@ class LocalUtilities(val hc: Configuration) extends Utilities {
     val srcFS = FileSystem.get(new URI(src), hc)
     val dstFS = FileSystem.get(new URI(dst), hc)
     dstFS.delete(new Path(dst), true)
-    FileUtil.copyMerge(srcFS,  new Path(src), dstFS,  new Path(dst), true, hc, null)
+    HadoopIO.copyMerge(srcFS, new Path(src), dstFS, new Path(dst), true, hc)
   }
 
   import scala.language.postfixOps
@@ -43,7 +43,8 @@ class LocalUtilities(val hc: Configuration) extends Utilities {
   }
 
   def write(path: String, contents: String): Unit = {
-    // TODO impl write
+    val out = new java.io.PrintWriter(new File(path), "UTF-8")
+    try out.write(contents) finally out.close()
   }
 
 }

@@ -3,14 +3,14 @@ package net.dinkla.lbnn.utils
 import Order._
 import net.dinkla.lbnn.TestUtils.ls1
 import net.dinkla.lbnn.geom.Point2
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Random
 
 /**
  * Created by dinkla on 20/06/15.
  */
-class OrderSuite extends FunSuite {
+class OrderSuite extends AnyFunSuite {
 
   test("testMedian") {
     val lss = ls1.permutations
@@ -90,7 +90,7 @@ class OrderSuite extends FunSuite {
       for (x <- 1 to rep) {
         println(s"x: $x")
         (0 until n).foreach { i => ls(i) = Random.nextDouble() }
-        val rs = Order.rec(ls)
+        val rs = Order.rec(ls.toSeq)   // toSeq: mutable -> immutable Seq (Scala 2.13)
         println(s"x: $x ${rs.size}")
       }
     }

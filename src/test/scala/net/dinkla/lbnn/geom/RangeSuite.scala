@@ -1,11 +1,11 @@
 package net.dinkla.lbnn.geom
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Created by dinkla on 20/06/15.
  */
-class RangeSuite extends FunSuite{
+class RangeSuite extends AnyFunSuite{
 
   test("compareIth") {
     def r = new Rectangle(Point2(0, 10), Point2(10, 20))

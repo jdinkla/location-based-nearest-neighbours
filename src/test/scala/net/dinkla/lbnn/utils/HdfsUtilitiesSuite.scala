@@ -2,12 +2,12 @@ package net.dinkla.lbnn.utils
 
 import net.dinkla.lbnn.spark.SparkUtils
 import org.apache.hadoop.conf.Configuration
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Created by Dinkla on 25.06.2015.
  */
-class HdfsUtilitiesSuite extends FunSuite {
+class HdfsUtilitiesSuite extends AnyFunSuite {
 
 if (false)
   test("download") {

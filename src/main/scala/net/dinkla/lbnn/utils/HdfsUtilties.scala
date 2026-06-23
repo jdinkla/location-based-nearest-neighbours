@@ -3,7 +3,7 @@ package net.dinkla.lbnn.utils
 import java.net.{URL, URI}
 
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FSDataOutputStream, Path, FileSystem, FileUtil}
+import org.apache.hadoop.fs.{FSDataOutputStream, Path, FileSystem}
 
 /**
  * Created by Dinkla on 25.06.2015.
@@ -30,7 +30,7 @@ class HdfsUtilties(val hc: Configuration) extends Utilities {
     val srcFS = FileSystem.get(new URI(src), hc)
     val dstFS = FileSystem.get(new URI(dst), hc)
     dstFS.delete(new Path(dst), true)
-    FileUtil.copyMerge(srcFS,  new Path(src), dstFS,  new Path(dst), true, hc, null)
+    HadoopIO.copyMerge(srcFS, new Path(src), dstFS, new Path(dst), true, hc)
   }
 
   // TODO does not work yet

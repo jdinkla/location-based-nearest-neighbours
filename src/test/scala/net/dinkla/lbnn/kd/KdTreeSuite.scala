@@ -3,7 +3,7 @@ package net.dinkla.lbnn.kd
 import net.dinkla.lbnn.geom.{Rectangle, Point2}
 import net.dinkla.lbnn.utils.Order
 import Order._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import KdTree._
 
@@ -12,7 +12,7 @@ import net.dinkla.lbnn.TestUtils.{ps1, ps2}
 /**
  * Created by dinkla on 19/06/15.
  */
-class KdTreeSuite extends FunSuite {
+class KdTreeSuite extends AnyFunSuite {
 
   test("fromList empty") {
     val kdt = fromList(List())

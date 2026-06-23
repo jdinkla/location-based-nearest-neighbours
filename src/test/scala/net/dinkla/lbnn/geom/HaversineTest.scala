@@ -1,11 +1,11 @@
 package net.dinkla.lbnn.geom
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Created by Dinkla on 27.06.2015.
  */
-class HaversineTest extends FunSuite {
+class HaversineTest extends AnyFunSuite {
 
   import Haversine._
 
